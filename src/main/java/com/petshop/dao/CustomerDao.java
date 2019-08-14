@@ -10,7 +10,7 @@ public interface CustomerDao {
 
 	List<Customer> getAllCustomers();
 
-	Customer saveCustomer(Customer customer);
+	Customer saveCustomer(Long id, Customer customer);
 
 	Customer updateCustomer(Long id, Customer customer);
 
