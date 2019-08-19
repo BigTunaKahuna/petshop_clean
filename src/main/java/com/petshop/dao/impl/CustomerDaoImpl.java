@@ -2,8 +2,11 @@ package com.petshop.dao.impl;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.petshop.dao.CustomerDao;
 import com.petshop.http_errors.IdNotFoundException;
@@ -14,6 +17,8 @@ import com.petshop.repository.VetRepository;
 
 @Repository
 public class CustomerDaoImpl implements CustomerDao {
+
+	Logger logger = LoggerFactory.getLogger(CustomerDaoImpl.class);
 
 	@Autowired
 	CustomerRepository customerRepository;
@@ -51,15 +56,26 @@ public class CustomerDaoImpl implements CustomerDao {
 	}
 
 	@Override
-	public Customer updateVetCustomer(Long vetId, Long custId, Customer customer) {
-		// TODO Auto-generated method stub
-		return null;
+	@Transactional
+	public Customer updateVetCustomer(Long newVetId, Long customerId, Customer customer) {
+		Vet newVet = vetRepository.findById(newVetId).orElseThrow(() -> new IdNotFoundException());
+		if (customerId != null && newVet != null) {
+			try {
+				newVet.addCustomer(customer);
+				customer.setVet(newVet);
+				customerRepository.deleteById(customerId);
+				return customerRepository.save(customer);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return customer;
 	}
 
 	@Override
 	public void deleteCustomerById(Long id) {
 		try {
-			if(customerRepository.findById(id)!=null) {
+			if (customerRepository.findById(id) != null) {
 				customerRepository.deleteById(id);
 			}
 		} catch (Exception e) {

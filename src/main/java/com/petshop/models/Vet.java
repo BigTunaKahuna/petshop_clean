@@ -97,8 +97,4 @@ public class Vet implements Serializable {
 		customer.setVet(this);
 	}
 
-	public void removeCustomer(Customer customer) {
-		customers.remove(customer);
-		customer.setVet(this);
-	}
 }

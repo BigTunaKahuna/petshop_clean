@@ -1,7 +1,6 @@
 package com.petshop.models;
 
 import java.io.Serializable;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -31,7 +30,7 @@ public class Customer implements Serializable {
 	@NotNull
 	private String petName;
 	@JsonBackReference
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "vet_id")
 	private Vet vet;
 

@@ -12,15 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.petshop.models.Vet;
-import com.petshop.repository.VetRepository;
 import com.petshop.service.VetService;
 
 @RestController
 @RequestMapping(path = "/api")
 public class VetController {
-
-	@Autowired
-	VetRepository vetRepository;
 
 	@Autowired
 	VetService vetService;
