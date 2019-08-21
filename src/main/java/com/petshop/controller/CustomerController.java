@@ -40,7 +40,7 @@ public class CustomerController {
 
 	}
 
-	// REQUEST:PUT @PATH: /api/vet/{vetId}/customer/{customerId} - Transfer to
+	// REQUEST:PUT @PATH: /api/customer/{customerId}/{newVetId} - Transfer to
 	// another doctor
 	@PutMapping("/customer/{customerId}/{newVetId}")
 	public @Valid Customer putCustomer(@PathVariable(value = "newVetId") Long newVetId,
