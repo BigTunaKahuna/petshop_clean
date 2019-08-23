@@ -20,9 +20,9 @@ public class Vet implements Serializable {
 	@NotNull
 	private String name;
 	@NotNull
-	private int age;
+	private Integer age;
 	@NotNull
-	private double yearsOfExperience;
+	private Double yearsOfExperience;
 	@NotNull
 	@Email
 	private String email;
@@ -60,19 +60,19 @@ public class Vet implements Serializable {
 		this.name = name;
 	}
 
-	public int getAge() {
+	public Integer getAge() {
 		return age;
 	}
 
-	public void setAge(int age) {
+	public void setAge(Integer age) {
 		this.age = age;
 	}
 
-	public double getYearsOfExperience() {
+	public Double getYearsOfExperience() {
 		return yearsOfExperience;
 	}
 
-	public void setYearsOfExperience(double yearsOfExperience) {
+	public void setYearsOfExperience(Double yearsOfExperience) {
 		this.yearsOfExperience = yearsOfExperience;
 	}
 
@@ -95,6 +95,12 @@ public class Vet implements Serializable {
 	public void addCustomer(Customer customer) {
 		customers.add(customer);
 		customer.setVet(this);
+	}
+
+	@Override
+	public String toString() {
+		return "Vet [id=" + id + ", name=" + name + ", age=" + age + ", yearsOfExperience=" + yearsOfExperience
+				+ ", email=" + email + "]";
 	}
 
 }

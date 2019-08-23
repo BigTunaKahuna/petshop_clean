@@ -15,50 +15,50 @@ import com.petshop.models.Customer;
 import com.petshop.service.CustomerService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/customer")
 public class CustomerController {
 
 	@Autowired
 	CustomerService customerService;
 
-	// REQUEST:GET @PATH: /api/customers
-	@GetMapping("/customers")
+	// REQUEST:GET @PATH: /customer/{id}
+	@GetMapping("/{id}")
+	public Customer getCustomerById(@PathVariable(value = "id") Long id) {
+		return customerService.getCustomerById(id);
+	}
+
+	// REQUEST:GET @PATH: /customer/all
+	@GetMapping("/all")
 	public List<Customer> getAllCustomers() {
 		return customerService.getAllCustomers();
 	}
 
-	// REQUEST:GET @PATH: /api/customer/{id}
-	@GetMapping("/customer/{id}")
-	public Customer getCustomer(@PathVariable(value = "id") Long id) {
-		return customerService.getCustomerById(id);
-	}
-
-	// REQUEST:POST @PATH: /api/vet/{vetId}/customer
-	@PostMapping("/vet/{vetId}/customer")
-	public Customer postCustomer(@PathVariable(value = "vetId") Long vetId, @RequestBody Customer customer) {
+	// REQUEST:POST @PATH: /customer/vet/{vetId}
+	@PostMapping("/vet/{vetId}")
+	public Customer saveCustomer(@PathVariable(value = "vetId") Long vetId, @RequestBody Customer customer) {
 		return customerService.saveCustomer(vetId, customer);
 
 	}
 
-	// REQUEST:PUT @PATH: /api/customer/{customerId}/{newVetId} - Transfer to
+	// REQUEST:PUT @PATH: /customer/{customerId}/{newVetId} - Transfer to
 	// another doctor
-	@PutMapping("/customer/{customerId}/{newVetId}")
-	public @Valid Customer putCustomer(@PathVariable(value = "newVetId") Long newVetId,
+	@PutMapping("/{customerId}/{newVetId}")
+	public @Valid Customer updateCustomer(@PathVariable(value = "newVetId") Long newVetId,
 			@PathVariable(value = "customerId") Long customerId, @Valid @RequestBody Customer customer) {
 		return customerService.updateVetForCustomer(newVetId, customerId, customer);
 	}
 
-	// REQUEST:PUT @PATH: /api/customer/{customerId} - Change data of a customer
-	@PutMapping("/customer/{customerId}")
-	public Customer putCustomerWithoutDoctor(@PathVariable(value = "customerId") Long customerId,
+	// REQUEST:PUT @PATH: /customer/{customerId} - Change data of a customer
+	@PutMapping("/{customerId}")
+	public Customer updateVetForCustomer(@PathVariable(value = "customerId") Long customerId,
 			@RequestBody Customer customer) {
 		return customerService.updateCustomer(customerId, customer);
 
 	}
 
-	// REQUEST:DELETE @PATH: /api/customer/{customerId}
-	@DeleteMapping("customer/{customerId}")
-	public void deleteCustomer(@PathVariable(value = "customerId") Long customerId) {
-		customerService.deleteCustomer(customerId);
+	// REQUEST:DELETE @PATH: /customer/{customerId}
+	@DeleteMapping("/{customerId}")
+	public void deleteCustomerById(@PathVariable(value = "customerId") Long customerId) {
+		customerService.deleteCustomerById(customerId);
 	}
 }

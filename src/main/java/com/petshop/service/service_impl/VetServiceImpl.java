@@ -7,7 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.petshop.dao.VetDao;
+import com.petshop.dto.VetDTO;
 import com.petshop.http_errors.IdNotFoundException;
+import com.petshop.mapper.VetMapper;
 import com.petshop.models.Vet;
 import com.petshop.service.VetService;
 
@@ -16,11 +18,16 @@ public class VetServiceImpl implements VetService {
 	@Autowired
 	VetDao vetDao;
 
+	@Autowired
+	VetMapper vetMapper;
 	Logger logger = LoggerFactory.getLogger(VetServiceImpl.class);
 
 	@Override
-	public Vet getVetById(Long id) {
-		return vetDao.getVetById(id);
+	public VetDTO getVetById(Long id) {
+		Vet vet = vetDao.getVetById(id);
+		VetDTO vetDTO = vetMapper.map(vet);
+
+		return vetDTO;
 	}
 
 	@Override

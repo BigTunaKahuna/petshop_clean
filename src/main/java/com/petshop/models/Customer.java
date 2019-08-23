@@ -34,4 +34,18 @@ public class Customer implements Serializable {
 	@JoinColumn(name = "vet_id")
 	private Vet vet;
 
+	public Customer() {
+	}
+
+	public Customer(Long customerId, @NotNull String name, @NotNull String phone, @NotNull String petSpecies,
+			@NotNull String petName) {
+		super();
+		this.customerId = customerId;
+		this.name = name;
+		this.phone = phone;
+		this.petSpecies = petSpecies;
+		this.petName = petName;
+
+	}
+
 }

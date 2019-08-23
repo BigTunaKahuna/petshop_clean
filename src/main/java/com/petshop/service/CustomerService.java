@@ -16,6 +16,6 @@ public interface CustomerService {
 
 	Customer updateVetForCustomer(Long vetId,Long customerId, Customer customer);
 
-	void deleteCustomer(Long id);
+	void deleteCustomerById(Long id);
 
 }

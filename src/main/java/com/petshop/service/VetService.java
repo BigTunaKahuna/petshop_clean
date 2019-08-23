@@ -2,11 +2,12 @@ package com.petshop.service;
 
 import java.util.List;
 
+import com.petshop.dto.VetDTO;
 import com.petshop.models.Vet;
 
 public interface VetService {
 
-	Vet getVetById(Long id);
+	VetDTO getVetById(Long id);
 
 	List<Vet> getAllVets();
 
