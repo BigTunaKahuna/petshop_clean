@@ -1,23 +1,15 @@
 package com.petshop.controller;
 
-import java.util.List;
-import javax.validation.Valid;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.petshop.dto.VetDTO;
 import com.petshop.models.Vet;
 import com.petshop.service.VetService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/vet")
@@ -37,19 +29,19 @@ public class VetController {
 
 	// REQUEST:GET @PATH: /vet/all
 	@GetMapping("/all")
-	public List<Vet> getAllVets() {
+	public List<VetDTO> getAllVets() {
 		return vetService.getAllVets();
 	}
 
 	// REQUEST:POST @PATH: /vet
 	@PostMapping("")
-	public Vet saveVet(@Valid @RequestBody Vet vet) {
+	public VetDTO saveVet(@Valid @RequestBody Vet vet) {
 		return vetService.saveVet(vet);
 	}
 
 	// REQUEST:PUT @PATH: /vet/{id}
 	@PutMapping("/{id}")
-	public Vet updateVet(@PathVariable(value = "id") Long id, @Valid @RequestBody Vet vet) {
+	public VetDTO updateVet(@PathVariable(value = "id") Long id, @Valid @RequestBody Vet vet) {
 		return vetService.updateVet(id, vet);
 	}
 

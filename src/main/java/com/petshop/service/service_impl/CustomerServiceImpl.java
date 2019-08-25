@@ -1,21 +1,28 @@
 package com.petshop.service.service_impl;
 
-import java.util.List;
+import com.petshop.dao.CustomerDao;
+import com.petshop.dto.CustomerDTO;
+import com.petshop.mapper.CustomerMapper;
+import com.petshop.models.Customer;
+import com.petshop.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.petshop.dao.CustomerDao;
-import com.petshop.models.Customer;
-import com.petshop.service.CustomerService;
+import java.util.List;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	CustomerDao customerDao;
 
+	@Autowired
+	CustomerMapper customerMapper;
+
 	@Override
-	public Customer getCustomerById(Long id) {
-		return customerDao.getCustomerById(id);
+	public CustomerDTO getCustomerById(Long id) {
+		Customer customer = customerDao.getCustomerById(id);
+		CustomerDTO customerDTO = customerMapper.map(customer);
+		return customerDTO;
 	}
 
 	@Override

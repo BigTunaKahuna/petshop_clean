@@ -1,11 +1,11 @@
 package com.petshop.mapper.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import com.petshop.dto.VetDTO;
 import com.petshop.mapper.VetMapper;
 import com.petshop.models.Vet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 @Component
 public class VetMapperImpl implements VetMapper {
@@ -15,31 +15,29 @@ public class VetMapperImpl implements VetMapper {
 	@Override
 	public VetDTO map(Vet vetSource) {
 		VetDTO vetDTO = new VetDTO();
-		Vet vet = vetSource;
-		Integer age = vet.getAge();
-		logger.info(vet.toString());
-		var checkExistenceOfCustomers = vet.getCustomers();
+		logger.info(vetSource.toString());
+		var checkExistenceOfCustomers = vetSource.getCustomers();
 
-		if (vet != null) {
-			if (vet.getId() != null) {
-				vetDTO.setId(vet.getId());
+		if (vetSource != null) {
+			if (vetSource.getId() != null) {
+				vetDTO.setId(vetSource.getId());
 			}
-			if (age != null) {
-				vetDTO.setAge(age);
+			if (vetSource.getAge() != null) {
+				vetDTO.setAge(vetSource.getAge());
 			}
-			if (vet.getEmail() != null) {
-				vetDTO.setEmail(vet.getEmail());
+			if (vetSource.getEmail() != null) {
+				vetDTO.setEmail(vetSource.getEmail());
 			}
-			if (vet.getName() != null) {
-				vetDTO.setName(vet.getName());
+			if (vetSource.getName() != null) {
+				vetDTO.setName(vetSource.getName());
 			}
-			if (vet.getYearsOfExperience() != null) {
-				vetDTO.setYearsOfExperience(vet.getYearsOfExperience());
+			if (vetSource.getYearsOfExperience() != null) {
+				vetDTO.setYearsOfExperience(vetSource.getYearsOfExperience());
 			}
 		}
 
 		if (checkExistenceOfCustomers != null) {
-			vetDTO.setCustomers(vet.getCustomers());
+			vetDTO.setCustomers(vetSource.getCustomers());
 			logger.info("Exista un customer");
 		} else {
 			logger.info("Nu exista niciun customer");

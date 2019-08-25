@@ -1,12 +1,13 @@
 package com.petshop.service;
 
-import java.util.List;
-
+import com.petshop.dto.CustomerDTO;
 import com.petshop.models.Customer;
+
+import java.util.List;
 
 public interface CustomerService {
 
-	Customer getCustomerById(Long id);
+    CustomerDTO getCustomerById(Long id);
 
 	List<Customer> getAllCustomers();
 
