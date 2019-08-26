@@ -1,7 +1,6 @@
 package com.petshop.controller;
 
 import com.petshop.dto.VetDTO;
-import com.petshop.models.Vet;
 import com.petshop.service.VetService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,7 @@ public class VetController {
 
 	@Autowired
 	VetService vetService;
-	
+
 	Logger logger = LoggerFactory.getLogger(VetController.class);
 
 	// REQUEST:GET @PATH: /vet/{id}
@@ -35,14 +34,14 @@ public class VetController {
 
 	// REQUEST:POST @PATH: /vet
 	@PostMapping("")
-	public VetDTO saveVet(@Valid @RequestBody Vet vet) {
-		return vetService.saveVet(vet);
+	public VetDTO saveVet(@Valid @RequestBody VetDTO vetDTO) {
+		return vetService.saveVet(vetDTO);
 	}
 
 	// REQUEST:PUT @PATH: /vet/{id}
 	@PutMapping("/{id}")
-	public VetDTO updateVet(@PathVariable(value = "id") Long id, @Valid @RequestBody Vet vet) {
-		return vetService.updateVet(id, vet);
+	public VetDTO updateVet(@PathVariable(value = "id") Long id, @Valid @RequestBody VetDTO vetDTO) {
+		return vetService.updateVet(id, vetDTO);
 	}
 
 	// REQUEST:DELETE @PATH: /vet/{id}

@@ -7,37 +7,67 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CustomerMapperImpl implements CustomerMapper {
-    @Override
-    public CustomerDTO map(Customer customerSource) {
-        CustomerDTO customerDTO = new CustomerDTO();
 
-        if (customerSource != null) {
-            if (customerSource.getCustomerId() != null) {
-                customerDTO.setCustomerId(customerSource.getCustomerId());
-            }
+	@Override
+	public CustomerDTO mapEntityToDto(Customer customerSource) {
+		CustomerDTO customerDTO = new CustomerDTO();
 
-            if (customerSource.getName() != null) {
-                customerDTO.setName(customerSource.getName());
-            }
+		if (customerSource != null) {
+			if (customerSource.getCustomerId() != null) {
+				customerDTO.setCustomerId(customerSource.getCustomerId());
+			}
 
-            if (customerSource.getPetName() != null) {
-                customerDTO.setPetName(customerSource.getPetName());
-            }
+			if (customerSource.getName() != null) {
+				customerDTO.setName(customerSource.getName());
+			}
 
-            if (customerSource.getPhone() != null) {
-                customerDTO.setPhone(customerSource.getPhone());
-            }
+			if (customerSource.getPetName() != null) {
+				customerDTO.setPetName(customerSource.getPetName());
+			}
 
-            if (customerSource.getPetSpecies() != null) {
-                customerDTO.setPetSpecies(customerSource.getPetSpecies());
-            }
+			if (customerSource.getPhone() != null) {
+				customerDTO.setPhone(customerSource.getPhone());
+			}
 
-            if (customerSource.getVet() != null) {
-                customerDTO.setVet(customerSource.getVet());
-            }
+			if (customerSource.getPetSpecies() != null) {
+				customerDTO.setPetSpecies(customerSource.getPetSpecies());
+			}
 
-        }
+			if (customerSource.getVet() != null) {
+				customerDTO.setVet(customerSource.getVet().getName());
+			}
 
-        return customerDTO;
-    }
+		}
+
+		return customerDTO;
+	}
+
+	@Override
+	public Customer mapDtoToEntity(CustomerDTO customerDTO) {
+		Customer customer = new Customer();
+		if (customerDTO != null) {
+			if (customerDTO.getCustomerId() != null) {
+				customer.setCustomerId(customerDTO.getCustomerId());
+			}
+
+			if (customerDTO.getName() != null) {
+				customer.setName(customerDTO.getName());
+			}
+
+			if (customerDTO.getPetName() != null) {
+				customer.setPetName(customerDTO.getPetName());
+			}
+
+			if (customerDTO.getPhone() != null) {
+				customer.setPhone(customerDTO.getPhone());
+			}
+
+			if (customerDTO.getPetSpecies() != null) {
+				customer.setPetSpecies(customerDTO.getPetSpecies());
+			}
+
+		}
+
+		return customer;
+	}
 }

@@ -4,5 +4,6 @@ import com.petshop.dto.VetDTO;
 import com.petshop.models.Vet;
 
 public interface VetMapper {
-	VetDTO map(Vet vet);
+	VetDTO mapEntityToDto(Vet vet);
+	Vet mapDtoToEntity(VetDTO vetDTO);
 }

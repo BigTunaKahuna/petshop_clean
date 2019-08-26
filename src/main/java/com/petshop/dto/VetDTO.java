@@ -15,6 +15,12 @@ public class VetDTO {
 	public VetDTO() {
 	}
 
+	@Override
+	public String toString() {
+		return "VetDTO [id=" + id + ", name=" + name + ", age=" + age + ", yearsOfExperience=" + yearsOfExperience
+				+ ", email=" + email + "]";
+	}
+
 	public VetDTO(Long id, String name, int age, double yearsOfExperience, String email, List<Customer> customers) {
 		super();
 		this.id = id;

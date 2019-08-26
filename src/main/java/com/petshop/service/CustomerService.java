@@ -1,21 +1,19 @@
 package com.petshop.service;
 
 import com.petshop.dto.CustomerDTO;
-import com.petshop.models.Customer;
-
 import java.util.List;
 
 public interface CustomerService {
 
-    CustomerDTO getCustomerById(Long id);
+	CustomerDTO getCustomerById(Long id);
 
-	List<Customer> getAllCustomers();
+	List<CustomerDTO> getAllCustomers();
 
-	Customer saveCustomer(Long vetId, Customer customer);
+	CustomerDTO saveCustomer(Long vetId, CustomerDTO customerDTO);
 
-	Customer updateCustomer(Long id, Customer customer);
+	CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO);
 
-	Customer updateVetForCustomer(Long vetId,Long customerId, Customer customer);
+	CustomerDTO updateVetForCustomer(Long vetId, Long customerId, CustomerDTO customerDTO);
 
 	void deleteCustomerById(Long id);
 

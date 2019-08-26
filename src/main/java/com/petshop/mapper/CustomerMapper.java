@@ -4,5 +4,6 @@ import com.petshop.dto.CustomerDTO;
 import com.petshop.models.Customer;
 
 public interface CustomerMapper {
-    CustomerDTO map(Customer customer);
+	CustomerDTO mapEntityToDto(Customer customer);
+	Customer mapDtoToEntity(CustomerDTO customerDTO);
 }

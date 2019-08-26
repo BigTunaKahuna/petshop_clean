@@ -13,9 +13,8 @@ public class VetMapperImpl implements VetMapper {
 	Logger logger = LoggerFactory.getLogger(VetMapperImpl.class);
 
 	@Override
-	public VetDTO map(Vet vetSource) {
+	public VetDTO mapEntityToDto(Vet vetSource) {
 		VetDTO vetDTO = new VetDTO();
-		logger.info(vetSource.toString());
 		var checkExistenceOfCustomers = vetSource.getCustomers();
 
 		if (vetSource != null) {
@@ -45,6 +44,34 @@ public class VetMapperImpl implements VetMapper {
 		}
 
 		return vetDTO;
+	}
+
+	@Override
+	public Vet mapDtoToEntity(VetDTO vetDTO) {
+		Vet vet = new Vet();
+		if (vetDTO != null) {
+			if (vetDTO.getId() != null) {
+				vet.setId(vetDTO.getId());
+			}
+
+			if (vetDTO.getAge() != null) {
+				vet.setAge(vetDTO.getAge());
+			}
+
+			if (vetDTO.getEmail() != null) {
+				vet.setEmail(vetDTO.getEmail());
+			}
+
+			if (vetDTO.getName() != null) {
+				vet.setName(vetDTO.getName());
+			}
+
+			if (vetDTO.getYearsOfExperience() != null) {
+				vet.setYearsOfExperience(vetDTO.getYearsOfExperience());
+			}
+		}
+
+		return vet;
 	}
 
 }

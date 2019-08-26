@@ -1,7 +1,6 @@
 package com.petshop.service;
 
 import com.petshop.dto.VetDTO;
-import com.petshop.models.Vet;
 
 import java.util.List;
 
@@ -11,9 +10,9 @@ public interface VetService {
 
 	List<VetDTO> getAllVets();
 
-	VetDTO saveVet(Vet vet);
+	VetDTO saveVet(VetDTO vetDTO);
 
-	VetDTO updateVet(Long id, Vet vet);
+	VetDTO updateVet(Long id, VetDTO vetDTO);
 
 	void deleteVetById(Long id);
 
