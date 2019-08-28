@@ -14,7 +14,7 @@ public class Vet implements Serializable {
 
 	private static final long serialVersionUID = 8582488702975524966L;
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "vet_id")
 	private Long id;
 	@NotNull
@@ -34,6 +34,16 @@ public class Vet implements Serializable {
 			@NotNull @Email String email, List<Customer> customers) {
 		super();
 		this.id = id;
+		this.name = name;
+		this.age = age;
+		this.yearsOfExperience = yearsOfExperience;
+		this.email = email;
+		this.customers = customers;
+	}
+
+	public Vet(@NotNull String name, @NotNull int age, @NotNull double yearsOfExperience, @NotNull @Email String email,
+			List<Customer> customers) {
+		super();
 		this.name = name;
 		this.age = age;
 		this.yearsOfExperience = yearsOfExperience;
@@ -95,6 +105,11 @@ public class Vet implements Serializable {
 	public void addCustomer(Customer customer) {
 		customers.add(customer);
 		customer.setVet(this);
+	}
+
+	public void removeCustomer(Customer customer) {
+		customers.remove(customer);
+		customer.setVet(null);
 	}
 
 	@Override
