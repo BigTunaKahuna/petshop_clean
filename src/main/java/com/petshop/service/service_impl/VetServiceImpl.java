@@ -32,7 +32,7 @@ public class VetServiceImpl implements VetService {
 
 	@Override
 	public List<VetDTO> getAllVets() {
-		List<Vet> vets = vetDao.gettAllVets();
+		List<Vet> vets = vetDao.getAllVets();
 		List<VetDTO> vetDTO = new ArrayList<>();
 		for (var vet : vets) {
 			vetDTO.add(vetMapper.mapEntityToDto(vet));
