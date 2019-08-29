@@ -20,7 +20,7 @@ public class VetDaoImpl implements VetDao {
 	}
 
 	@Override
-	public List<Vet> gettAllVets() {
+	public List<Vet> getAllVets() {
 		return vetRepository.findAll();
 	}
 

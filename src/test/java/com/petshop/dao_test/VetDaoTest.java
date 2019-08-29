@@ -43,7 +43,7 @@ public class VetDaoTest {
 		vetDao.saveVet(new Vet("Marius", 25, Double.valueOf(3), "foo@gmail.com", new ArrayList<>()));
 		vetDao.saveVet(new Vet("Andrei", 40, Double.valueOf(13), "fooTest@gmail.com", new ArrayList<>()));
 
-		List<Vet> getAllVets = vetDao.gettAllVets();
+		List<Vet> getAllVets = vetDao.getAllVets();
 
 		assertEquals(2, getAllVets.size());
 	}
@@ -67,9 +67,8 @@ public class VetDaoTest {
 	@Rollback(true)
 	public void testUpdateVet() {
 		Vet vet = vetDao.saveVet(new Vet("Marius", 25, Double.valueOf(3), "foo@gmail.com", new ArrayList<>()));
-		
+
 		// Checking the old vet
-		assertEquals(Integer.valueOf(1).toString(), vet.getId().toString());
 		assertEquals("Marius", vet.getName());
 		assertEquals(Integer.valueOf(25), vet.getAge());
 		assertEquals(Double.valueOf(3), vet.getYearsOfExperience());
@@ -80,7 +79,6 @@ public class VetDaoTest {
 		Vet updatedVet = vetDao.getVetById(newVet.getId());
 
 		// Checking the updated vet
-		assertEquals(Integer.valueOf(1).toString(), updatedVet.getId().toString());
 		assertEquals("Andrei", updatedVet.getName());
 		assertEquals(Integer.valueOf(40), updatedVet.getAge());
 		assertEquals(Double.valueOf(13), updatedVet.getYearsOfExperience());
