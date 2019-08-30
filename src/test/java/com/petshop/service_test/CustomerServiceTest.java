@@ -1,6 +1,7 @@
 package com.petshop.service_test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
@@ -104,7 +105,7 @@ public class CustomerServiceTest {
 				.mapEntityToDto(new Customer("Adrian", "012345", "Labrador", "Toby", vet1));
 		CustomerDTO updatedCustomer = customerMapper
 				.mapEntityToDto(new Customer("Adrian", "012345", "Labrador", "Toby", vet2));
-
+		
 		vetService.saveVet(vetMapper.mapEntityToDto(vet1));
 		vetService.saveVet(vetMapper.mapEntityToDto(vet2));
 
