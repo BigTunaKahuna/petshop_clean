@@ -13,7 +13,7 @@ public interface CustomerService {
 
 	CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO);
 
-	CustomerDTO updateVetForCustomer(Long vetId, Long customerId, CustomerDTO customerDTO);
+	CustomerDTO updateVetForCustomer(Long newVetId, Long customerId, CustomerDTO customerDTO);
 
 	void deleteCustomerById(Long id);
 
