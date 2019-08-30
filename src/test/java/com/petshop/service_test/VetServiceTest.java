@@ -1,7 +1,6 @@
 package com.petshop.service_test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
@@ -12,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import com.petshop.dao.VetDao;
 import com.petshop.dto.VetDTO;
 import com.petshop.mapper.VetMapper;
 import com.petshop.models.Customer;
@@ -26,8 +24,6 @@ public class VetServiceTest {
 	VetService vetService;
 	@Autowired
 	VetMapper vetMapper;
-	@Mock
-	VetDao vetDao;
 
 	@BeforeEach
 	public void setup() {
@@ -83,20 +79,24 @@ public class VetServiceTest {
 
 	@Test
 	public void testUpdateVet() {
-		Vet vet1 = new Vet(Long.valueOf(1), "NumeDTO", 30, 10, "foo@gmail.com", new ArrayList<>());
-		Vet vet2 = new Vet(Long.valueOf(2), "Andrei", 40, Double.valueOf(20), "foo2@gmail.com", new ArrayList<>());
-		VetDTO vetDTO1 = vetMapper.mapEntityToDto(vet1);
-		VetDTO vetDTO2 = vetMapper.mapEntityToDto(vet2);
+		VetDTO vetDTO1 = vetMapper.mapEntityToDto(new Vet("NumeDTO", 30, 10, "foo@gmail.com", new ArrayList<>()));
+		VetDTO vetDTO2 = vetMapper
+				.mapEntityToDto(new Vet("Andrei", 40, Double.valueOf(20), "foo2@gmail.com", new ArrayList<>()));
 
-		when(vetService.saveVet(vetMapper.mapEntityToDto(vet1))).thenReturn(vetDTO1);
-		when(vetService.updateVet(vetDTO1.getId(), vetMapper.mapEntityToDto(vet2))).thenReturn(vetDTO2);
+		when(vetService.saveVet(vetDTO1)).thenReturn(vetDTO1);
+		vetService.saveVet(vetDTO1);
+		verify(vetService).saveVet(vetDTO1);
 
-		assertEquals(vet2.getId(), vetDTO2.getId());
-		assertEquals(vet2.getName(), vetDTO2.getName());
-		assertEquals(vet2.getAge(), vetDTO2.getAge());
-		assertEquals(vet2.getYearsOfExperience(), vetDTO2.getYearsOfExperience());
-		assertEquals(vet2.getEmail(), vetDTO2.getEmail());
-		assertEquals(vet2.getCustomers(), vetDTO2.getCustomers());
+		when(vetService.updateVet(vetDTO1.getId(), vetDTO2)).thenReturn(vetDTO2);
+		VetDTO updatedVet = vetService.updateVet(vetDTO1.getId(), vetDTO2);
+		verify(vetService).updateVet(vetDTO1.getId(), vetDTO2);
+
+		assertEquals(updatedVet.getId(), vetDTO2.getId());
+		assertEquals(updatedVet.getName(), vetDTO2.getName());
+		assertEquals(updatedVet.getAge(), vetDTO2.getAge());
+		assertEquals(updatedVet.getYearsOfExperience(), vetDTO2.getYearsOfExperience());
+		assertEquals(updatedVet.getEmail(), vetDTO2.getEmail());
+		assertEquals(updatedVet.getCustomers(), vetDTO2.getCustomers());
 	}
 
 	@Test
