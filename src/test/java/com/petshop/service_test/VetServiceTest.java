@@ -20,7 +20,6 @@ import com.petshop.models.Vet;
 import com.petshop.service.VetService;
 
 @SpringBootTest
-@TestPropertySource(locations = "classpath:test.properties")
 public class VetServiceTest {
 
 	@Mock

@@ -24,7 +24,6 @@ import com.petshop.service.CustomerService;
 import com.petshop.service.VetService;
 
 @SpringBootTest
-@TestPropertySource(locations = "classpath:test.properties")
 public class CustomerServiceTest {
 
 	@Mock
