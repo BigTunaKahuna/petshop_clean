@@ -1,7 +1,6 @@
 package com.petshop.service_test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
@@ -12,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+
 import com.petshop.dto.CustomerDTO;
 import com.petshop.dto.VetDTO;
 import com.petshop.http_errors.IdNotFoundException;
@@ -23,6 +24,7 @@ import com.petshop.service.CustomerService;
 import com.petshop.service.VetService;
 
 @SpringBootTest
+@TestPropertySource(locations = "classpath:test.properties")
 public class CustomerServiceTest {
 
 	@Mock
@@ -86,9 +88,9 @@ public class CustomerServiceTest {
 		CustomerDTO customer2 = customerMapper
 				.mapEntityToDto(new Customer("Andrei", "543210", "Bichon", "Ali", new Vet()));
 
-		when(customerService.updateCustomer(customer1.getCustomerId(), customer2)).thenReturn(customer2);
-		CustomerDTO updatedCustomer = customerService.updateCustomer(customer1.getCustomerId(), customer2);
-		verify(customerService).updateCustomer(customer1.getCustomerId(), customer2);
+		when(customerService.updateCustomer(customer1.getId(), customer2)).thenReturn(customer2);
+		CustomerDTO updatedCustomer = customerService.updateCustomer(customer1.getId(), customer2);
+		verify(customerService).updateCustomer(customer1.getId(), customer2);
 
 		assertEquals("Andrei", updatedCustomer.getName());
 		assertEquals("543210", updatedCustomer.getPhone());
@@ -110,15 +112,15 @@ public class CustomerServiceTest {
 		vetService.saveVet(vetMapper.mapEntityToDto(vet2));
 
 		when(customerService.saveCustomer(vet1.getId(), customer)).thenReturn(customer);
-		when(customerService.updateVetForCustomer(vet2.getId(), customer.getCustomerId(), customer))
+		when(customerService.updateVetForCustomer(vet2.getId(), customer.getId(), customer))
 				.thenReturn(updatedCustomer);
 
 		customerService.saveCustomer(vet1.getId(), customer);
 		updatedCustomer = customerService.updateVetForCustomer(vetMapper.mapEntityToDto(vet2).getId(),
-				customer.getCustomerId(), customer);
+				customer.getId(), customer);
 
 		verify(customerService).saveCustomer(vet1.getId(), customer);
-		verify(customerService).updateVetForCustomer(vetMapper.mapEntityToDto(vet2).getId(), customer.getCustomerId(),
+		verify(customerService).updateVetForCustomer(vetMapper.mapEntityToDto(vet2).getId(), customer.getId(),
 				customer);
 		assertEquals(vet2.getName(), updatedCustomer.getVet());
 		assertEquals("012345", updatedCustomer.getPhone());
@@ -134,10 +136,10 @@ public class CustomerServiceTest {
 		
 		when(customerService.saveCustomer(vet.getId(), customerDTO)).thenReturn(customerDTO);
 		customerService.saveCustomer(vet.getId(), customerDTO);
-		customerService.deleteCustomerById(customer.getCustomerId());
+		customerService.deleteCustomerById(customer.getId());
 		
 		verify(customerService).saveCustomer(vet.getId(), customerDTO);
-		verify(customerService).deleteCustomerById(customer.getCustomerId());
+		verify(customerService).deleteCustomerById(customer.getId());
 	}
 }
 
