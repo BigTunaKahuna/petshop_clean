@@ -11,8 +11,10 @@ import com.petshop.http_errors.IdNotFoundException;
 import com.petshop.models.Vet;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
+@TestPropertySource(locations = "classpath:test.properties")
 @SpringBootTest
 public class VetDaoTest {
 

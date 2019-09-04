@@ -8,12 +8,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.TestPropertySource;
+
 import com.petshop.dao.CustomerDao;
 import com.petshop.dao.VetDao;
 import com.petshop.http_errors.IdNotFoundException;
 import com.petshop.models.Customer;
 import com.petshop.models.Vet;
 
+@TestPropertySource(locations = "classpath:test.properties")
 @SpringBootTest
 public class CustomerDaoTest {
 
@@ -58,16 +61,16 @@ public class CustomerDaoTest {
 		assertEquals("foo@gmail.com", vetAfterSave.getEmail());
 
 		// Customer after save validate
-		assertEquals(customer.getCustomerId(), customerAfterSave.getCustomerId());
+		assertEquals(customer.getId(), customerAfterSave.getId());
 		assertEquals("Rares", customerAfterSave.getName());
 		assertEquals("Labrador", customerAfterSave.getPetSpecies());
 		assertEquals("Toby", customerAfterSave.getPetName());
 		assertEquals("12345", customerAfterSave.getPhone());
 		assertEquals(vet.toString(), customerAfterSave.getVet().toString());
 
-		Customer customerAfterRetrieve = customerDao.getCustomerById(customerAfterSave.getCustomerId());
+		Customer customerAfterRetrieve = customerDao.getCustomerById(customerAfterSave.getId());
 		// Customer after retrieve validate
-		assertEquals(customer.getCustomerId(), customerAfterRetrieve.getCustomerId());
+		assertEquals(customer.getId(), customerAfterRetrieve.getId());
 		assertEquals("Rares", customerAfterRetrieve.getName());
 		assertEquals("Labrador", customerAfterRetrieve.getPetSpecies());
 		assertEquals("Toby", customerAfterRetrieve.getPetName());
@@ -86,7 +89,7 @@ public class CustomerDaoTest {
 		customerDao.saveCustomer(vet.getId(), customer);
 
 		Customer customerToBeChanged = new Customer("Andrei", "54321", "Retriever", "Dart", vet);
-		Customer changedCustomer = customerDao.updateCustomer(customer.getCustomerId(), customerToBeChanged);
+		Customer changedCustomer = customerDao.updateCustomer(customer.getId(), customerToBeChanged);
 
 		assertEquals("Andrei", changedCustomer.getName());
 		assertEquals("54321", changedCustomer.getPhone());
@@ -103,7 +106,7 @@ public class CustomerDaoTest {
 
 		Customer savedCustomer = customerDao.saveCustomer(vet1.getId(),
 				new Customer("Rares", "12345", "Labrador", "Toby", vet1));
-		Customer updatedCustomer = customerDao.updateVetCustomer(vet2.getId(), savedCustomer.getCustomerId(),
+		Customer updatedCustomer = customerDao.updateVetCustomer(vet2.getId(), savedCustomer.getId(),
 				savedCustomer);
 
 		assertEquals(vet2.toString(), updatedCustomer.getVet().toString());
@@ -119,8 +122,8 @@ public class CustomerDaoTest {
 		Customer customer = customerDao.saveCustomer(vet.getId(),
 				new Customer("Rares", "12345", "Labrador", "Toby", vet));
 
-		customerDao.deleteCustomerById(customer.getCustomerId());
-		assertThrows(IdNotFoundException.class, () -> customerDao.getCustomerById(customer.getCustomerId()));
+		customerDao.deleteCustomerById(customer.getId());
+		assertThrows(IdNotFoundException.class, () -> customerDao.getCustomerById(customer.getId()));
 
 	}
 

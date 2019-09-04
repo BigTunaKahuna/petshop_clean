@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+
 import com.petshop.dto.VetDTO;
 import com.petshop.mapper.VetMapper;
 import com.petshop.models.Customer;
@@ -18,6 +20,7 @@ import com.petshop.models.Vet;
 import com.petshop.service.VetService;
 
 @SpringBootTest
+@TestPropertySource(locations = "classpath:test.properties")
 public class VetServiceTest {
 
 	@Mock
