@@ -1,9 +1,11 @@
 package com.petshop.controller;
 
 import com.petshop.dto.CustomerDTO;
+import com.petshop.http_errors.IdNotFoundException;
 import com.petshop.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,49 +20,54 @@ public class CustomerController {
 
 	// REQUEST:GET @PATH: /customer/{id}
 	@GetMapping("/{id}")
-	public CustomerDTO getCustomerById(@PathVariable(value = "id") Long id) {
-		return customerService.getCustomerById(id);
+	public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable(value = "id") Long id) {
+		CustomerDTO customerDTO = customerService.getCustomerById(id);
+		return new ResponseEntity<CustomerDTO>(customerDTO, HttpStatus.OK);
 	}
 
 	// REQUEST:GET @PATH: /customer/all
 	@GetMapping("/all")
-	public List<CustomerDTO> getAllCustomers() {
-		return customerService.getAllCustomers();
+	public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
+		List<CustomerDTO> allCustomers = customerService.getAllCustomers();
+		return new ResponseEntity<List<CustomerDTO>>(allCustomers, HttpStatus.OK);
 	}
 
 	// REQUEST:POST @PATH: /customer/vet/{vetId}
 	@PostMapping("/vet/{vetId}")
-	public CustomerDTO saveCustomer(@PathVariable(value = "vetId") Long vetId, @RequestBody CustomerDTO customerDTO) {
-		return customerService.saveCustomer(vetId, customerDTO);
-
+	public ResponseEntity<CustomerDTO> saveCustomer(@PathVariable(value = "vetId") Long vetId,
+			@Valid @RequestBody CustomerDTO customerDTO) {
+		CustomerDTO customer = customerService.saveCustomer(vetId, customerDTO);
+		return new ResponseEntity<CustomerDTO>(customer, HttpStatus.CREATED);
 	}
 
 	// REQUEST:PUT @PATH: /customer/{customerId}/{newVetId} - Transfer to
 	// another doctor
-	@Transactional
 	@PutMapping("/{customerId}/{newVetId}")
-	public @Valid CustomerDTO updateCustomer(@PathVariable(value = "newVetId") Long newVetId,
+	public @Valid ResponseEntity<CustomerDTO> updateVetForCustomer(@PathVariable(value = "newVetId") Long newVetId,
 			@PathVariable(value = "customerId") Long customerId, @Valid @RequestBody CustomerDTO customerDTO) {
 
 		try {
-			return customerService.updateVetForCustomer(newVetId, customerId, customerDTO);
-		} catch (Exception e) {
+			CustomerDTO customer = customerService.updateVetForCustomer(newVetId, customerId, customerDTO);
+			return new ResponseEntity<CustomerDTO>(customer, HttpStatus.CREATED);
+		} catch (IdNotFoundException e) {
 			e.printStackTrace();
+			throw e;
 		}
-		return null;
 	}
 
 	// REQUEST:PUT @PATH: /customer/{customerId} - Change data of a customer
 	@PutMapping("/{customerId}")
-	public CustomerDTO updateVetForCustomer(@PathVariable(value = "customerId") Long customerId,
-			@RequestBody CustomerDTO customer) {
-		return customerService.updateCustomer(customerId, customer);
+	public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable(value = "customerId") Long customerId,
+			@Valid @RequestBody CustomerDTO customer) {
+		CustomerDTO customerDTO = customerService.updateCustomer(customerId, customer);
+		return new ResponseEntity<CustomerDTO>(customerDTO, HttpStatus.CREATED);
 
 	}
 
 	// REQUEST:DELETE @PATH: /customer/{customerId}
 	@DeleteMapping("/{customerId}")
-	public void deleteCustomerById(@PathVariable(value = "customerId") Long customerId) {
+	public ResponseEntity<String> deleteCustomerById(@PathVariable(value = "customerId") Long customerId) {
 		customerService.deleteCustomerById(customerId);
+		return new ResponseEntity<String>("The customer was deleted succesfully!", HttpStatus.OK);
 	}
 }
