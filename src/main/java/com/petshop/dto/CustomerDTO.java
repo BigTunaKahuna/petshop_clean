@@ -1,19 +1,25 @@
 package com.petshop.dto;
 
+import javax.validation.constraints.NotEmpty;
+
 public class CustomerDTO {
-	private Long customerId;
+	private Long id;
+	@NotEmpty
 	private String name;
+	@NotEmpty
 	private String phone;
+	@NotEmpty
 	private String petSpecies;
+	@NotEmpty
 	private String petName;
 	private String vet;
 
 	public CustomerDTO() {
 	}
 
-	public CustomerDTO(Long customerId, String name, String phone, String petSpecies, String petName, String vet) {
+	public CustomerDTO(Long id, String name, String phone, String petSpecies, String petName, String vet) {
 		super();
-		this.customerId = customerId;
+		this.id = id;
 		this.name = name;
 		this.phone = phone;
 		this.petSpecies = petSpecies;
@@ -21,12 +27,12 @@ public class CustomerDTO {
 		this.vet = vet;
 	}
 
-	public Long getCustomerId() {
-		return customerId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setCustomerId(Long customerId) {
-		this.customerId = customerId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {

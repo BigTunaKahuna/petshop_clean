@@ -11,14 +11,14 @@ public class Customer implements Serializable {
 	private static final long serialVersionUID = -4592973994222019477L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long customerId;
-	@NotNull
+	private Long id;
+	@NotNull(message = "Please enter a name")
 	private String name;
-	@NotNull
+	@NotNull(message = "Please enter a phone number")
 	private String phone;
-	@NotNull
+	@NotNull(message = "Please enter a pet species")
 	private String petSpecies;
-	@NotNull
+	@NotNull(message = "Please enter a pet name")
 	private String petName;
 	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -38,10 +38,10 @@ public class Customer implements Serializable {
 		this.vet = vet;
 	}
 
-	public Customer(Long customerId, @NotNull String name, @NotNull String phone, @NotNull String petSpecies,
+	public Customer(Long id, @NotNull String name, @NotNull String phone, @NotNull String petSpecies,
 			@NotNull String petName, Vet vet) {
 		super();
-		this.customerId = customerId;
+		this.id = id;
 		this.name = name;
 		this.phone = phone;
 		this.petSpecies = petSpecies;
@@ -49,12 +49,12 @@ public class Customer implements Serializable {
 		this.vet = vet;
 	}
 
-	public Long getCustomerId() {
-		return customerId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setCustomerId(Long customerId) {
-		this.customerId = customerId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {

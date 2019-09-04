@@ -17,14 +17,14 @@ public class Vet implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "vet_id")
 	private Long id;
-	@NotNull
+	@NotNull(message = "Please enter a name")
 	private String name;
-	@NotNull
+	@NotNull(message = "Please enter an age")
 	private Integer age;
-	@NotNull
+	@NotNull(message = "Please enter the years of experience")
 	private Double yearsOfExperience;
-	@NotNull
-	@Email
+	@NotNull(message = "Please enter an email")
+	@Email(message = "Email format is not valid")
 	private String email;
 	@JsonManagedReference
 	@OneToMany(mappedBy = "vet", cascade = CascadeType.ALL, orphanRemoval = true)

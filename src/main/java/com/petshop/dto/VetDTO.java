@@ -2,13 +2,22 @@ package com.petshop.dto;
 
 import java.util.List;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import com.petshop.models.Customer;
 
 public class VetDTO {
 	private Long id;
+	@NotEmpty
 	private String name;
+	@NotNull
 	private Integer age;
+	@NotNull
 	private double yearsOfExperience;
+	@Email
+	@NotEmpty
 	private String email;
 	private List<Customer> customers;
 
