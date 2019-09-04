@@ -1,4 +1,4 @@
-package com.petshop.service.service_impl;
+package com.petshop.service.impl;
 
 import com.petshop.dao.CustomerDao;
 import com.petshop.dto.CustomerDTO;

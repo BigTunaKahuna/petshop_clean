@@ -1,4 +1,4 @@
-package com.petshop.service.service_impl;
+package com.petshop.service.impl;
 
 import com.petshop.dao.VetDao;
 import com.petshop.dto.VetDTO;
@@ -62,7 +62,7 @@ public class VetServiceImpl implements VetService {
 				logger.info("Not Null");
 			}
 		} catch (Exception e) {
-			logger.info("we throwed exception");
+			logger.error("we throwed exception");
 			throw new IdNotFoundException();
 		}
 	}

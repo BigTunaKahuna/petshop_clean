@@ -13,8 +13,8 @@ public class CustomerMapperImpl implements CustomerMapper {
 		CustomerDTO customerDTO = new CustomerDTO();
 
 		if (customerSource != null) {
-			if (customerSource.getCustomerId() != null) {
-				customerDTO.setCustomerId(customerSource.getCustomerId());
+			if (customerSource.getId() != null) {
+				customerDTO.setId(customerSource.getId());
 			}
 
 			if (customerSource.getName() != null) {
@@ -46,8 +46,8 @@ public class CustomerMapperImpl implements CustomerMapper {
 	public Customer mapDtoToEntity(CustomerDTO customerDTO) {
 		Customer customer = new Customer();
 		if (customerDTO != null) {
-			if (customerDTO.getCustomerId() != null) {
-				customer.setCustomerId(customerDTO.getCustomerId());
+			if (customerDTO.getId() != null) {
+				customer.setId(customerDTO.getId());
 			}
 
 			if (customerDTO.getName() != null) {
