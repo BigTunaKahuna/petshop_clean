@@ -6,8 +6,6 @@ import com.petshop.http_errors.IdNotFoundException;
 import com.petshop.mapper.VetMapper;
 import com.petshop.models.Vet;
 import com.petshop.service.VetService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +18,6 @@ public class VetServiceImpl implements VetService {
 	VetDao vetDao;
 	@Autowired
 	VetMapper vetMapper;
-
-	Logger logger = LoggerFactory.getLogger(VetServiceImpl.class);
 
 	@Override
 	public VetDTO getVetById(Long id) {
@@ -57,12 +53,8 @@ public class VetServiceImpl implements VetService {
 	@Override
 	public void deleteVetById(Long id) {
 		try {
-			if (vetDao.getVetById(id) != null) {
-				vetDao.deleteVetById(id);
-				logger.info("Not Null");
-			}
-		} catch (Exception e) {
-			logger.error("we throwed exception");
+			vetDao.deleteVetById(id);
+		} catch (IdNotFoundException e) {
 			throw new IdNotFoundException();
 		}
 	}

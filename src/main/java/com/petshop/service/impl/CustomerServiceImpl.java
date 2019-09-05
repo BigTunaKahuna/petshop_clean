@@ -62,11 +62,9 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public void deleteCustomerById(Long id) {
 		try {
-			if (customerDao.getCustomerById(id) != null) {
 				customerDao.deleteCustomerById(id);
-			}
-		} catch (Exception e) {
-			throw new IdNotFoundException();
+		} catch (IdNotFoundException e) {
+			throw e;
 		}
 	}
 }

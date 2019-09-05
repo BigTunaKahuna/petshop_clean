@@ -1,5 +1,6 @@
 package com.petshop.service_test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -7,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-
+import org.springframework.boot.test.mock.mockito.MockBean;
+import com.petshop.dao.CustomerDao;
 import com.petshop.dto.CustomerDTO;
-import com.petshop.dto.VetDTO;
 import com.petshop.http_errors.IdNotFoundException;
 import com.petshop.mapper.CustomerMapper;
 import com.petshop.mapper.VetMapper;
@@ -22,18 +23,22 @@ import com.petshop.models.Customer;
 import com.petshop.models.Vet;
 import com.petshop.service.CustomerService;
 import com.petshop.service.VetService;
+import static org.mockito.BDDMockito.*;
 
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class CustomerServiceTest {
 
-	@Mock
+	@Autowired
 	CustomerService customerService;
-	@Mock
+	@Autowired
 	VetService vetService;
 	@Autowired
 	CustomerMapper customerMapper;
 	@Autowired
 	VetMapper vetMapper;
+	@MockBean
+	CustomerDao customerDao;
 
 	@BeforeEach
 	public void setup() {
@@ -42,130 +47,87 @@ public class CustomerServiceTest {
 
 	@Test
 	public void testGetCustomerById() throws IdNotFoundException {
-		when(customerService.getCustomerById(Long.valueOf(1))).thenReturn(
-				customerMapper.mapEntityToDto(new Customer("Adrian", "012345", "Labrador", "Toby", new Vet())));
-		CustomerDTO customerDTO = customerService.getCustomerById(Long.valueOf(1));
+		Customer customer = new Customer(1L, "Adrian", "012345", "Labrador", "Toby", new Vet());
+		when(customerDao.getCustomerById(anyLong())).thenReturn(customer);
+		CustomerDTO customerDTO = customerService.getCustomerById(anyLong());
 
-		assertEquals("Adrian", customerDTO.getName());
-		assertEquals("012345", customerDTO.getPhone());
-		assertEquals("Labrador", customerDTO.getPetSpecies());
-		assertEquals("Toby", customerDTO.getPetName());
+		verify(customerDao).getCustomerById(anyLong());
+		assertThat(customerDTO.getId()).isEqualTo(1L);
+		assertThat(customerDTO.getName()).isEqualTo("Adrian");
+		assertThat(customerDTO.getPhone()).isEqualTo("012345");
+		assertThat(customerDTO.getPetSpecies()).isEqualTo("Labrador");
+		assertThat(customerDTO.getPetName()).isEqualTo("Toby");
+		assertThat(customerDTO.getVet()).isNullOrEmpty();
 	}
 
 	@Test
 	public void testGetAllCustomers() {
-		List<CustomerDTO> allCustomers = new ArrayList<>();
-		CustomerDTO customer1 = customerMapper
-				.mapEntityToDto(new Customer("Adrian", "012345", "Labrador", "Toby", new Vet()));
-		CustomerDTO customer2 = customerMapper
-				.mapEntityToDto(new Customer("Andrei", "054321", "Bichon", "Ali", new Vet()));
-
+		List<Customer> allCustomers = new ArrayList<>();
+		Customer customer1 = new Customer(1L, "Adrian", "012345", "Labrador", "Toby", new Vet());
+		Customer customer2 = new Customer(2L, "Andrei", "054321", "Bichon", "Ali", new Vet());
 		allCustomers.add(customer1);
 		allCustomers.add(customer2);
 
-		when(customerService.getAllCustomers()).thenReturn(allCustomers);
-		List<CustomerDTO> retrievedAllCustomers = customerService.getAllCustomers();
+		when(customerDao.getAllCustomers()).thenReturn(allCustomers);
 
-		assertEquals(2, retrievedAllCustomers.size());
-		verify(customerService).getAllCustomers();
+		List<CustomerDTO> retrieveAllCustomers = customerService.getAllCustomers();
+
+		verify(customerDao).getAllCustomers();
+		assertEquals(2, retrieveAllCustomers.size());
 	}
 
 	@Test
 	public void testSaveCustomer() {
-		VetDTO vet = vetMapper.mapEntityToDto(new Vet("NumeDTO", 30, 10, "foo@gmail.com", new ArrayList<>()));
-		CustomerDTO customer = customerMapper
-				.mapEntityToDto(new Customer("Adrian", "012345", "Labrador", "Toby", new Vet()));
-		when(customerService.saveCustomer(vet.getId(), customer)).thenReturn(customer);
-		customerService.saveCustomer(vet.getId(), customer);
-		verify(customerService).saveCustomer(vet.getId(), customer);
+		Customer customer = new Customer(1L, "Adrian", "012345", "Labrador", "Toby", new Vet());
+
+		when(customerDao.saveCustomer(anyLong(), any(Customer.class))).thenReturn(customer);
+		CustomerDTO customerDTO = customerService.saveCustomer(anyLong(), any(CustomerDTO.class));
+
+		verify(customerDao).saveCustomer(anyLong(), any(Customer.class));
+		assertThat(customerDTO.getId()).isEqualTo(1L);
+		assertThat(customerDTO.getName()).isEqualTo("Adrian");
+		assertThat(customerDTO.getPhone()).isEqualTo("012345");
+		assertThat(customerDTO.getPetSpecies()).isEqualTo("Labrador");
+		assertThat(customerDTO.getPetName()).isEqualTo("Toby");
+		assertThat(customerDTO.getVet()).isNullOrEmpty();
 	}
 
 	@Test
 	public void testUpdateCustomer() {
-		CustomerDTO customer1 = customerMapper
-				.mapEntityToDto(new Customer("Adrian", "012345", "Labrador", "Toby", new Vet()));
-		CustomerDTO customer2 = customerMapper
-				.mapEntityToDto(new Customer("Andrei", "543210", "Bichon", "Ali", new Vet()));
+		Customer customer = new Customer("Andrei", "543210", "Bichon", "Ali", new Vet());
 
-		when(customerService.updateCustomer(customer1.getId(), customer2)).thenReturn(customer2);
-		CustomerDTO updatedCustomer = customerService.updateCustomer(customer1.getId(), customer2);
-		verify(customerService).updateCustomer(customer1.getId(), customer2);
+		when(customerDao.updateCustomer(anyLong(), any(Customer.class))).thenReturn(customer);
+		CustomerDTO customerDTO = customerService.updateCustomer(anyLong(), any(CustomerDTO.class));
 
-		assertEquals("Andrei", updatedCustomer.getName());
-		assertEquals("543210", updatedCustomer.getPhone());
-		assertEquals("Bichon", updatedCustomer.getPetSpecies());
-		assertEquals("Ali", updatedCustomer.getPetName());
+		verify(customerDao).updateCustomer(anyLong(), any(Customer.class));
+		assertEquals("Andrei", customerDTO.getName());
+		assertEquals("543210", customerDTO.getPhone());
+		assertEquals("Bichon", customerDTO.getPetSpecies());
+		assertEquals("Ali", customerDTO.getPetName());
 	}
 
 	@Test
 	public void testUpdateVetForCustomer() {
-		Vet vet1 = new Vet("NumeDTO", 30, 10, "foo@gmail.com", new ArrayList<>());
-		Vet vet2 = new Vet("Andrei", 40, Double.valueOf(20), "foo2@gmail.com", new ArrayList<>());
+		Vet vet = new Vet();
+		vet.setName("Iulica");
+		Customer customer = new Customer(1L, "Adrian", "012345", "Labrador", "Toby", vet);
 
-		CustomerDTO customer = customerMapper
-				.mapEntityToDto(new Customer("Adrian", "012345", "Labrador", "Toby", vet1));
-		CustomerDTO updatedCustomer = customerMapper
-				.mapEntityToDto(new Customer("Adrian", "012345", "Labrador", "Toby", vet2));
-		
-		vetService.saveVet(vetMapper.mapEntityToDto(vet1));
-		vetService.saveVet(vetMapper.mapEntityToDto(vet2));
+		when(customerDao.updateVetCustomer(anyLong(), anyLong(), any(Customer.class))).thenReturn(customer);
+		CustomerDTO customerDTO = customerService.updateVetForCustomer(anyLong(), anyLong(), any(CustomerDTO.class));
 
-		when(customerService.saveCustomer(vet1.getId(), customer)).thenReturn(customer);
-		when(customerService.updateVetForCustomer(vet2.getId(), customer.getId(), customer))
-				.thenReturn(updatedCustomer);
-
-		customerService.saveCustomer(vet1.getId(), customer);
-		updatedCustomer = customerService.updateVetForCustomer(vetMapper.mapEntityToDto(vet2).getId(),
-				customer.getId(), customer);
-
-		verify(customerService).saveCustomer(vet1.getId(), customer);
-		verify(customerService).updateVetForCustomer(vetMapper.mapEntityToDto(vet2).getId(), customer.getId(),
-				customer);
-		assertEquals(vet2.getName(), updatedCustomer.getVet());
-		assertEquals("012345", updatedCustomer.getPhone());
-		assertEquals("Labrador", updatedCustomer.getPetSpecies());
-		assertEquals("Toby", updatedCustomer.getPetName());
+		verify(customerDao).updateVetCustomer(anyLong(), anyLong(), any(Customer.class));
+		assertThat(customerDTO.getId()).isEqualTo(1L);
+		assertThat(customerDTO.getName()).isEqualTo("Adrian");
+		assertThat(customerDTO.getPhone()).isEqualTo("012345");
+		assertThat(customerDTO.getPetSpecies()).isEqualTo("Labrador");
+		assertThat(customerDTO.getPetName()).isEqualTo("Toby");
+		assertThat(customerDTO.getVet()).isEqualTo("Iulica");
 	}
 
 	@Test
 	public void testDeleteCustomerById() {
-		Vet vet = new Vet();
-		Customer customer = new Customer("Adrian", "012345", "Labrador", "Toby", vet);
-		CustomerDTO customerDTO = customerService.getCustomerById(Long.valueOf(1));
-		
-		when(customerService.saveCustomer(vet.getId(), customerDTO)).thenReturn(customerDTO);
-		customerService.saveCustomer(vet.getId(), customerDTO);
-		customerService.deleteCustomerById(customer.getId());
-		
-		verify(customerService).saveCustomer(vet.getId(), customerDTO);
-		verify(customerService).deleteCustomerById(customer.getId());
+		customerService.deleteCustomerById(anyLong());
+
+		verify(customerDao).deleteCustomerById(anyLong());
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,31 +1,33 @@
 package com.petshop.service_test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-
+import org.springframework.boot.test.mock.mockito.MockBean;
+import com.petshop.dao.VetDao;
 import com.petshop.dto.VetDTO;
 import com.petshop.mapper.VetMapper;
-import com.petshop.models.Customer;
 import com.petshop.models.Vet;
 import com.petshop.service.VetService;
 
 @SpringBootTest
 public class VetServiceTest {
 
-	@Mock
+	@Autowired
 	VetService vetService;
 	@Autowired
 	VetMapper vetMapper;
+	@MockBean
+	VetDao vetDao;
 
 	@BeforeEach
 	public void setup() {
@@ -34,84 +36,75 @@ public class VetServiceTest {
 
 	@Test
 	public void testGetVetById() {
-		when(vetService.getVetById(Long.valueOf(1))).thenReturn(vetMapper
-				.mapEntityToDto(new Vet(Long.valueOf(1), "NumeDTO", 30, 10, "foo@gmail.com", new ArrayList<>())));
-		VetDTO vetDTO = vetService.getVetById(Long.valueOf(1));
+		Vet vet = new Vet(1L, "NumeDTO", 30, 10, "foo@gmail.com", new ArrayList<>());
 
-		List<Customer> emptyCustomerList = new ArrayList<>();
-		assertEquals(Long.valueOf(1), vetDTO.getId());
-		assertEquals("NumeDTO", vetDTO.getName());
-		assertEquals(Integer.valueOf(30), vetDTO.getAge());
-		assertEquals(Double.valueOf(10), vetDTO.getYearsOfExperience());
-		assertEquals("foo@gmail.com", vetDTO.getEmail());
-		assertEquals(emptyCustomerList, vetDTO.getCustomers());
+		when(vetDao.getVetById(anyLong())).thenReturn(vet);
+		VetDTO vetDTO = vetService.getVetById(anyLong());
+
+		verify(vetDao).getVetById(anyLong());
+		assertThat(vetDTO.getId()).isEqualTo(1L);
+		assertThat(vetDTO.getName()).isEqualTo("NumeDTO");
+		assertThat(vetDTO.getAge()).isEqualTo(30);
+		assertThat(vetDTO.getYearsOfExperience()).isEqualTo(10);
+		assertThat(vetDTO.getEmail()).isEqualTo("foo@gmail.com");
+		assertThat(vetDTO.getCustomers()).isNullOrEmpty();
 	}
 
 	@Test
 	public void testGetAllVets() {
 		List<Vet> vets = new ArrayList<>();
-		Vet vet1 = new Vet(Long.valueOf(1), "Marius", 25, Double.valueOf(3), "foo@gmail.com", new ArrayList<>());
-		Vet vet2 = new Vet(Long.valueOf(2), "Andrei", 40, Double.valueOf(20), "foo2@gmail.com", new ArrayList<>());
+		Vet vet1 = new Vet(1L, "Marius", 25, Double.valueOf(3), "foo@gmail.com", new ArrayList<>());
+		Vet vet2 = new Vet(2L, "Andrei", 40, Double.valueOf(20), "foo2@gmail.com", new ArrayList<>());
 
 		vets.add(vet1);
 		vets.add(vet2);
 
-		List<VetDTO> vetDTO = new ArrayList<>();
-		for (var vet : vets) {
-			vetDTO.add(vetMapper.mapEntityToDto(vet));
-		}
+		when(vetDao.getAllVets()).thenReturn(vets);
+		List<VetDTO> allVets = vetService.getAllVets();
 
-		when(vetService.getAllVets()).thenReturn(vetDTO);
-		var vetList = vetService.getAllVets();
-
-		assertEquals(2, vetList.size());
-		verify(vetService).getAllVets();
+		assertEquals(2, allVets.size());
+		verify(vetDao).getAllVets();
 	}
 
 	@Test
 	public void testSaveVet() {
 		Vet vet = new Vet(Long.valueOf(1), "NumeDTO", 30, 10, "foo@gmail.com", new ArrayList<>());
-		VetDTO vetDTO = vetMapper.mapEntityToDto(vet);
 
-		when(vetService.saveVet(vetDTO)).thenReturn(vetDTO);
-		vetService.saveVet(vetDTO);
-		verify(vetService).saveVet(vetDTO);
+		when(vetDao.saveVet(any(Vet.class))).thenReturn(vet);
+		VetDTO vetDTO = vetService.saveVet(any(VetDTO.class));
+
+		verify(vetDao).saveVet(any(Vet.class));
+		assertThat(vetDTO.getId()).isEqualTo(1L);
+		assertThat(vetDTO.getName()).isEqualTo("NumeDTO");
+		assertThat(vetDTO.getAge()).isEqualTo(30);
+		assertThat(vetDTO.getYearsOfExperience()).isEqualTo(10);
+		assertThat(vetDTO.getEmail()).isEqualTo("foo@gmail.com");
+		assertThat(vetDTO.getCustomers()).isNullOrEmpty();
 
 	}
 
 	@Test
 	public void testUpdateVet() {
-		VetDTO vetDTO1 = vetMapper.mapEntityToDto(new Vet("NumeDTO", 30, 10, "foo@gmail.com", new ArrayList<>()));
-		VetDTO vetDTO2 = vetMapper
-				.mapEntityToDto(new Vet("Andrei", 40, Double.valueOf(20), "foo2@gmail.com", new ArrayList<>()));
+		Vet vet = new Vet(1L, "Andrei", 40, 20D, "foo2@gmail.com", new ArrayList<>());
 
-		when(vetService.saveVet(vetDTO1)).thenReturn(vetDTO1);
-		vetService.saveVet(vetDTO1);
-		verify(vetService).saveVet(vetDTO1);
+		when(vetDao.updateVet(anyLong(), any(Vet.class))).thenReturn(vet);
+		VetDTO vetDTO = vetService.updateVet(anyLong(), any(VetDTO.class));
 
-		when(vetService.updateVet(vetDTO1.getId(), vetDTO2)).thenReturn(vetDTO2);
-		VetDTO updatedVet = vetService.updateVet(vetDTO1.getId(), vetDTO2);
-		verify(vetService).updateVet(vetDTO1.getId(), vetDTO2);
-
-		assertEquals(updatedVet.getId(), vetDTO2.getId());
-		assertEquals(updatedVet.getName(), vetDTO2.getName());
-		assertEquals(updatedVet.getAge(), vetDTO2.getAge());
-		assertEquals(updatedVet.getYearsOfExperience(), vetDTO2.getYearsOfExperience());
-		assertEquals(updatedVet.getEmail(), vetDTO2.getEmail());
-		assertEquals(updatedVet.getCustomers(), vetDTO2.getCustomers());
+		verify(vetDao).updateVet(anyLong(), any(Vet.class));
+		assertThat(vetDTO.getId()).isEqualTo(1L);
+		assertThat(vetDTO.getName()).isEqualTo("Andrei");
+		assertThat(vetDTO.getAge()).isEqualTo(40);
+		assertThat(vetDTO.getYearsOfExperience()).isEqualTo(20D);
+		assertThat(vetDTO.getEmail()).isEqualTo("foo2@gmail.com");
+		assertThat(vetDTO.getCustomers()).isNullOrEmpty();
 	}
 
 	@Test
 	public void testDeleteVetById() {
-		Vet vet = new Vet(Long.valueOf(1), "NumeDTO", 30, 10, "foo@gmail.com", new ArrayList<>());
-		VetDTO vetDTO = vetMapper.mapEntityToDto(vet);
 
-		when(vetService.saveVet(vetDTO)).thenReturn(vetDTO);
-		vetService.saveVet(vetDTO);
-		vetService.deleteVetById(vetDTO.getId());
+		vetService.deleteVetById(anyLong());
 
-		verify(vetService).saveVet(vetDTO);
-		verify(vetService).deleteVetById(vetDTO.getId());
+		verify(vetDao).deleteVetById(anyLong());
 	}
 
 }
