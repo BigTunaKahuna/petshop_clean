@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import com.petshop.dao.VetDao;
 import com.petshop.dto.VetDTO;
-import com.petshop.mapper.VetMapper;
 import com.petshop.models.Vet;
 import com.petshop.service.VetService;
 
@@ -23,11 +22,9 @@ import com.petshop.service.VetService;
 public class VetServiceTest {
 
 	@Autowired
-	VetService vetService;
-	@Autowired
-	VetMapper vetMapper;
+	private VetService vetService;
 	@MockBean
-	VetDao vetDao;
+	private VetDao vetDao;
 
 	@BeforeEach
 	public void setup() {

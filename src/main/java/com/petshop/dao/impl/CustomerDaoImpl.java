@@ -21,10 +21,10 @@ public class CustomerDaoImpl implements CustomerDao {
 	Logger logger = LoggerFactory.getLogger(CustomerDaoImpl.class);
 
 	@Autowired
-	CustomerRepository customerRepository;
+	private CustomerRepository customerRepository;
 
 	@Autowired
-	VetRepository vetRepository;
+	private VetRepository vetRepository;
 
 	@Override
 	public Customer getCustomerById(Long id) {

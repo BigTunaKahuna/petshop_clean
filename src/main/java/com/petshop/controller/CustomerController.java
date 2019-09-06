@@ -16,7 +16,7 @@ import java.util.List;
 public class CustomerController {
 
 	@Autowired
-	CustomerService customerService;
+	private CustomerService customerService;
 
 	// REQUEST:GET @PATH: /customer/{id}
 	@GetMapping("/{id}")

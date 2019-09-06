@@ -15,9 +15,9 @@ import java.util.List;
 @Service
 public class VetServiceImpl implements VetService {
 	@Autowired
-	VetDao vetDao;
+	private VetDao vetDao;
 	@Autowired
-	VetMapper vetMapper;
+	private VetMapper vetMapper;
 
 	@Override
 	public VetDTO getVetById(Long id) {

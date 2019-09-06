@@ -10,6 +10,7 @@ import java.util.List;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "VET")
 public class Vet implements Serializable {
 
 	private static final long serialVersionUID = 8582488702975524966L;

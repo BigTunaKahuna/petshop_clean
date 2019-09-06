@@ -18,7 +18,7 @@ import java.util.List;
 public class VetController {
 
 	@Autowired
-	VetService vetService;
+	private VetService vetService;
 
 	Logger logger = LoggerFactory.getLogger(VetController.class);
 

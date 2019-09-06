@@ -21,9 +21,9 @@ import com.petshop.models.Vet;
 public class CustomerDaoTest {
 
 	@Autowired
-	CustomerDao customerDao;
+	private CustomerDao customerDao;
 	@Autowired
-	VetDao vetDao;
+	private VetDao vetDao;
 
 	@Test
 	@Transactional

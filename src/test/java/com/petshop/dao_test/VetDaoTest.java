@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class VetDaoTest {
 
 	@Autowired
-	VetDao vetDao;
+	private VetDao vetDao;
 
 	@Test
 	@Transactional

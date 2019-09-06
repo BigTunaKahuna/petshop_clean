@@ -17,12 +17,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import com.petshop.dao.CustomerDao;
 import com.petshop.dto.CustomerDTO;
 import com.petshop.http_errors.IdNotFoundException;
-import com.petshop.mapper.CustomerMapper;
-import com.petshop.mapper.VetMapper;
 import com.petshop.models.Customer;
 import com.petshop.models.Vet;
 import com.petshop.service.CustomerService;
-import com.petshop.service.VetService;
 import static org.mockito.BDDMockito.*;
 
 @SpringBootTest
@@ -30,15 +27,9 @@ import static org.mockito.BDDMockito.*;
 public class CustomerServiceTest {
 
 	@Autowired
-	CustomerService customerService;
-	@Autowired
-	VetService vetService;
-	@Autowired
-	CustomerMapper customerMapper;
-	@Autowired
-	VetMapper vetMapper;
+	private CustomerService customerService;
 	@MockBean
-	CustomerDao customerDao;
+	private CustomerDao customerDao;
 
 	@BeforeEach
 	public void setup() {

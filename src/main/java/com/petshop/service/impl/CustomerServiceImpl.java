@@ -15,10 +15,10 @@ import java.util.List;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 	@Autowired
-	CustomerDao customerDao;
+	private CustomerDao customerDao;
 
 	@Autowired
-	CustomerMapper customerMapper;
+	private CustomerMapper customerMapper;
 
 	@Override
 	public CustomerDTO getCustomerById(Long id) {

@@ -10,7 +10,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.*;
@@ -21,16 +20,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.petshop.dto.CustomerDTO;
 import com.petshop.http_errors.IdNotFoundException;
 import com.petshop.mapper.CustomerMapper;
-import com.petshop.mapper.VetMapper;
 import com.petshop.models.Customer;
 import com.petshop.models.Vet;
 import com.petshop.service.impl.CustomerServiceImpl;
@@ -41,15 +37,13 @@ import com.petshop.service.impl.CustomerServiceImpl;
 public class CustomerControllerTest {
 
 	@Autowired
-	ObjectMapper mapper;
+	private ObjectMapper mapper;
 	@MockBean
-	CustomerServiceImpl customerService;
+	private CustomerServiceImpl customerService;
 	@Autowired
 	private MockMvc mvc;
 	@Autowired
-	VetMapper vetMapper;
-	@Autowired
-	CustomerMapper customerMapper;
+	private CustomerMapper customerMapper;
 	
 	@Test
 	public void testGetCustomerById() throws Exception {

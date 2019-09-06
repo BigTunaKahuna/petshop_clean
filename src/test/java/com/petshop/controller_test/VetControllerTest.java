@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.petshop.dto.VetDTO;
 import com.petshop.http_errors.IdNotFoundException;
-import com.petshop.mapper.CustomerMapper;
 import com.petshop.mapper.VetMapper;
 import com.petshop.models.Customer;
 import com.petshop.models.Vet;
@@ -35,11 +34,9 @@ public class VetControllerTest {
 	@Autowired
 	private MockMvc mvc;
 	@MockBean
-	VetServiceImpl vetService;
+	private VetServiceImpl vetService;
 	@Autowired
-	VetMapper vetMapper;
-	@Autowired
-	CustomerMapper customerMapper;
+	private VetMapper vetMapper;
 
 	@Test
 	public void getVetByIdTest() throws Exception {

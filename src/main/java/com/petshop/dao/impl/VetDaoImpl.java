@@ -12,7 +12,7 @@ import com.petshop.repository.VetRepository;
 public class VetDaoImpl implements VetDao {
 
 	@Autowired
-	VetRepository vetRepository;
+	private VetRepository vetRepository;
 
 	@Override
 	public Vet getVetById(Long id) {
