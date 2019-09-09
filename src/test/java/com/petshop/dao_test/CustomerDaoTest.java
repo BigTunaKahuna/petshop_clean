@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
-
 import com.petshop.dao.CustomerDao;
 import com.petshop.dao.VetDao;
 import com.petshop.http_errors.IdNotFoundException;
@@ -101,13 +100,13 @@ public class CustomerDaoTest {
 	@Transactional
 	@Rollback(true)
 	public void testUpdateVetCustomer() {
-		Vet vet1 = vetDao.saveVet(new Vet("Marius", 25, Double.valueOf(3), "foo@gmail.com", new ArrayList<>()));
-		Vet vet2 = vetDao.saveVet(new Vet("Andrei", 40, Double.valueOf(13), "fooTest@gmail.com", new ArrayList<>()));
-
-		Customer savedCustomer = customerDao.saveCustomer(vet1.getId(),
-				new Customer("Rares", "12345", "Labrador", "Toby", vet1));
-		Customer updatedCustomer = customerDao.updateVetCustomer(vet2.getId(), savedCustomer.getId(),
-				savedCustomer);
+		Vet vet1 = new Vet("Marius", 25, Double.valueOf(3), "foo@gmail.com", new ArrayList<>());
+		Vet vet2 = new Vet("Andrei", 40, Double.valueOf(13), "fooTest@gmail.com", new ArrayList<>());
+		Customer customer = new Customer("Rares", "12345", "Labrador", "Toby", new Vet());
+		vetDao.saveVet(vet1);
+		vetDao.saveVet(vet2);
+		customerDao.saveCustomer(vet1.getId(),customer);
+		Customer updatedCustomer = customerDao.updateVetCustomer(vet2.getId(), customer.getId(), customer);
 
 		assertEquals(vet2.toString(), updatedCustomer.getVet().toString());
 	}
