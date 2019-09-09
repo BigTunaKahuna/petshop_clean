@@ -16,7 +16,7 @@ public class VetDaoImpl implements VetDao {
 
 	@Override
 	public Vet getVetById(Long id) {
-		return vetRepository.findById(id).orElseThrow(() -> new IdNotFoundException());
+		return vetRepository.findById(id).orElseThrow(IdNotFoundException::new);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class VetDaoImpl implements VetDao {
 			vetReq.setYearsOfExperience(vet.getYearsOfExperience());
 			vetReq.setEmail(vet.getEmail());
 			return vetRepository.save(vetReq);
-		}).orElseThrow(() -> new IdNotFoundException());
+		}).orElseThrow(IdNotFoundException::new);
 	}
 
 	@Override
