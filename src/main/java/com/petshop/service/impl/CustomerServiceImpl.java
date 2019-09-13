@@ -2,10 +2,11 @@ package com.petshop.service.impl;
 
 import com.petshop.dao.CustomerDao;
 import com.petshop.dto.CustomerDTO;
-import com.petshop.http_errors.IdNotFoundException;
+import com.petshop.exception.IdNotFoundException;
 import com.petshop.mapper.CustomerMapper;
 import com.petshop.models.Customer;
 import com.petshop.service.CustomerService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +24,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public CustomerDTO getCustomerById(Long id) {
 		Customer customer = customerDao.getCustomerById(id);
-		CustomerDTO customerDTO = customerMapper.mapEntityToDto(customer);
-		return customerDTO;
+		return customerMapper.mapEntityToDto(customer);
 	}
 
 	@Override
@@ -40,31 +40,27 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public CustomerDTO saveCustomer(Long vetId, CustomerDTO customerDTO) {
 		Customer customer = customerMapper.mapDtoToEntity(customerDTO);
-		CustomerDTO customerDtoHolder = customerMapper.mapEntityToDto(customerDao.saveCustomer(vetId, customer));
-		return customerDtoHolder;
+		return customerMapper.mapEntityToDto(customerDao.saveCustomer(vetId, customer));
 	}
 
 	@Override
 	public CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO) {
 		Customer customer = customerMapper.mapDtoToEntity(customerDTO);
-		CustomerDTO customerDtoHolder = customerMapper.mapEntityToDto(customerDao.updateCustomer(id, customer));
-		return customerDtoHolder;
+		return customerMapper.mapEntityToDto(customerDao.updateCustomer(id, customer));
 	}
 
 	@Override
 	public CustomerDTO updateVetForCustomer(Long newVetId, Long customerId, CustomerDTO customerDTO) {
 		Customer customer = customerMapper.mapDtoToEntity(customerDTO);
-		CustomerDTO customerDtoHolder = customerMapper
-				.mapEntityToDto(customerDao.updateVetCustomer(newVetId, customerId, customer));
-		return customerDtoHolder;
+		return customerMapper.mapEntityToDto(customerDao.updateVetCustomer(newVetId, customerId, customer));
 	}
 
 	@Override
 	public void deleteCustomerById(Long id) {
 		try {
-				customerDao.deleteCustomerById(id);
+			customerDao.deleteCustomerById(id);
 		} catch (IdNotFoundException e) {
-			throw e;
+			throw new IdNotFoundException();
 		}
 	}
 }

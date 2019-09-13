@@ -2,7 +2,11 @@ package com.petshop.mapper.impl;
 
 import com.petshop.dto.VetDTO;
 import com.petshop.mapper.VetMapper;
+import com.petshop.models.Customer;
 import com.petshop.models.Vet;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -16,13 +20,14 @@ public class VetMapperImpl implements VetMapper {
 	public VetDTO mapEntityToDto(Vet vetSource) {
 		VetDTO vetDTO = new VetDTO();
 		var checkExistenceOfCustomers = vetSource.getCustomers();
+		List<Customer> emptyArray = new ArrayList<>();
 
-		if (checkExistenceOfCustomers != null) {
+		if (checkExistenceOfCustomers.size() != emptyArray.size()) {
 			vetDTO.setCustomers(vetSource.getCustomers());
 			logger.info("Exista un customer");
 		} else {
 			logger.info("Nu exista niciun customer");
-			vetDTO.setCustomers(null);
+			vetDTO.setCustomers(emptyArray);
 		}
 
 		if (vetSource.getId() != null) {

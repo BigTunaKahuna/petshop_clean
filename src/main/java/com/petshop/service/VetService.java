@@ -3,10 +3,11 @@ package com.petshop.service;
 import com.petshop.dto.VetDTO;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface VetService {
 
-	VetDTO getVetById(Long id);
+	CompletableFuture<VetDTO> getVetById(Long id) throws InterruptedException;
 
 	List<VetDTO> getAllVets();
 

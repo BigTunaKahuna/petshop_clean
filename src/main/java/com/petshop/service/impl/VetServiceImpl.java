@@ -2,15 +2,18 @@ package com.petshop.service.impl;
 
 import com.petshop.dao.VetDao;
 import com.petshop.dto.VetDTO;
-import com.petshop.http_errors.IdNotFoundException;
+import com.petshop.exception.IdNotFoundException;
 import com.petshop.mapper.VetMapper;
 import com.petshop.models.Vet;
 import com.petshop.service.VetService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class VetServiceImpl implements VetService {
@@ -20,10 +23,12 @@ public class VetServiceImpl implements VetService {
 	private VetMapper vetMapper;
 
 	@Override
-	public VetDTO getVetById(Long id) {
+	@Async("taskExecutor")
+	@Transactional
+	public CompletableFuture<VetDTO> getVetById(Long id) throws InterruptedException {
 		Vet vet = vetDao.getVetById(id);
 		VetDTO vetDTO = vetMapper.mapEntityToDto(vet);
-		return vetDTO;
+		return CompletableFuture.completedFuture(vetDTO);
 	}
 
 	@Override
@@ -39,15 +44,13 @@ public class VetServiceImpl implements VetService {
 	@Override
 	public VetDTO saveVet(VetDTO vetDTO) {
 		Vet vet = vetMapper.mapDtoToEntity(vetDTO);
-		VetDTO vetDtoHolder = vetMapper.mapEntityToDto(vetDao.saveVet(vet));
-		return vetDtoHolder;
+		return vetMapper.mapEntityToDto(vetDao.saveVet(vet));
 	}
 
 	@Override
 	public VetDTO updateVet(Long id, VetDTO vetDTO) {
 		Vet vet = vetMapper.mapDtoToEntity(vetDTO);
-		VetDTO vetDtoHolder = vetMapper.mapEntityToDto(vetDao.updateVet(id, vet));
-		return vetDtoHolder;
+		return vetMapper.mapEntityToDto(vetDao.updateVet(id, vet));
 	}
 
 	@Override

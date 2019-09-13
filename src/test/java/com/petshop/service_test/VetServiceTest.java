@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.BDDMockito.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -25,19 +26,19 @@ public class VetServiceTest {
 	private VetService vetService;
 	@MockBean
 	private VetDao vetDao;
-
+	
 	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 	}
 
 	@Test
-	public void testGetVetById() {
+	public void testGetVetById() throws InterruptedException, ExecutionException {
 		Vet vet = new Vet(1L, "NumeDTO", 30, 10, "foo@gmail.com", new ArrayList<>());
 
 		when(vetDao.getVetById(anyLong())).thenReturn(vet);
-		VetDTO vetDTO = vetService.getVetById(anyLong());
-
+		VetDTO vetDTO = vetService.getVetById(1L).get();
+		
 		verify(vetDao).getVetById(anyLong());
 		assertThat(vetDTO.getId()).isEqualTo(1L);
 		assertThat(vetDTO.getName()).isEqualTo("NumeDTO");

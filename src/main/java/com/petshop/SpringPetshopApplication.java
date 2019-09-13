@@ -13,5 +13,4 @@ public class SpringPetshopApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SpringPetshopApplication.class, args);
 	}
-
 }

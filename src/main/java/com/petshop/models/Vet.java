@@ -28,7 +28,7 @@ public class Vet implements Serializable {
 	@Email(message = "Email format is not valid")
 	private String email;
 	@JsonManagedReference
-	@OneToMany(mappedBy = "vet", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "vet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<Customer> customers = new ArrayList<>();
 
 	public Vet(Long id, @NotNull String name, @NotNull int age, @NotNull double yearsOfExperience,
