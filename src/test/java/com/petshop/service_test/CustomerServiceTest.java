@@ -16,10 +16,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import com.petshop.dao.CustomerDao;
 import com.petshop.dto.CustomerDTO;
-import com.petshop.http_errors.IdNotFoundException;
+import com.petshop.exception.IdNotFoundException;
 import com.petshop.models.Customer;
 import com.petshop.models.Vet;
 import com.petshop.service.CustomerService;
+
 import static org.mockito.BDDMockito.*;
 
 @SpringBootTest

@@ -25,7 +25,7 @@ import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.petshop.dto.CustomerDTO;
-import com.petshop.http_errors.IdNotFoundException;
+import com.petshop.exception.IdNotFoundException;
 import com.petshop.mapper.CustomerMapper;
 import com.petshop.models.Customer;
 import com.petshop.models.Vet;

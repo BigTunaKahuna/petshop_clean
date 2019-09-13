@@ -1,9 +1,10 @@
-package com.petshop.http_errors;
+package com.petshop.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Wrong id or it doesn't exist!")
 public class IdNotFoundException extends RuntimeException {
-	private static final long serialVersionUID = 3001720877072869553L;
+
+	private static final long serialVersionUID = 6054637847318577805L;
+
+	public IdNotFoundException() {
+		super("The id is wrong or it doesn't exist!");
+	}
 }

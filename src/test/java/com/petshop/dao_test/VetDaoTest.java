@@ -7,8 +7,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.petshop.dao.VetDao;
-import com.petshop.http_errors.IdNotFoundException;
+import com.petshop.exception.IdNotFoundException;
 import com.petshop.models.Vet;
+
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;

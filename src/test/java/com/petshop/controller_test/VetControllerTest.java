@@ -8,6 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,7 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.petshop.dto.VetDTO;
-import com.petshop.http_errors.IdNotFoundException;
+import com.petshop.exception.IdNotFoundException;
 import com.petshop.mapper.VetMapper;
 import com.petshop.models.Customer;
 import com.petshop.models.Vet;
@@ -42,13 +44,14 @@ public class VetControllerTest {
 	public void getVetByIdTest() throws Exception {
 		Vet vet = new Vet(Long.valueOf(1), "Marius", 25, Double.valueOf(3), "foo@gmail.com", new ArrayList<>());
 		VetDTO vetDTO = vetMapper.mapEntityToDto(vet);
-
+		
 		Customer customer = new Customer(Long.valueOf(1), "Adrian", "012345", "Labrador", "Toby", vet);
 		List<Customer> allCustomers = new ArrayList<>();
 		allCustomers.add(customer);
 		vetDTO.setCustomers(allCustomers);
-
-		given(vetService.getVetById(vetDTO.getId())).willReturn(vetDTO);
+		
+		CompletableFuture<VetDTO> vetFuture = CompletableFuture.completedFuture(vetDTO);
+		given(vetService.getVetById(vetDTO.getId())).willReturn(vetFuture);
 
 		this.mvc.perform(get("/vet/1").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())

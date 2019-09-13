@@ -11,7 +11,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
 import com.petshop.dao.CustomerDao;
 import com.petshop.dao.VetDao;
-import com.petshop.http_errors.IdNotFoundException;
+import com.petshop.exception.IdNotFoundException;
 import com.petshop.models.Customer;
 import com.petshop.models.Vet;
 
