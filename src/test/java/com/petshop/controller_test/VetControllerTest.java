@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.petshop.dto.VetDTO;
 import com.petshop.exception.IdNotFoundException;
-import com.petshop.mapper.VetMapper;
+import com.petshop.mapper.impl.VetMapper;
 import com.petshop.models.Customer;
 import com.petshop.models.Vet;
 import com.petshop.service.impl.VetServiceImpl;

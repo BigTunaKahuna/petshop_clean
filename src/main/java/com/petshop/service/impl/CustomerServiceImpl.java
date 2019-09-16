@@ -3,7 +3,7 @@ package com.petshop.service.impl;
 import com.petshop.dao.CustomerDao;
 import com.petshop.dto.CustomerDTO;
 import com.petshop.exception.IdNotFoundException;
-import com.petshop.mapper.CustomerMapper;
+import com.petshop.mapper.impl.CustomerMapper;
 import com.petshop.models.Customer;
 import com.petshop.service.CustomerService;
 
@@ -17,8 +17,7 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	private CustomerDao customerDao;
-
-	@Autowired
+	@Autowired	
 	private CustomerMapper customerMapper;
 
 	@Override

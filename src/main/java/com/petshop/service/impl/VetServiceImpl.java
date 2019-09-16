@@ -3,7 +3,7 @@ package com.petshop.service.impl;
 import com.petshop.dao.VetDao;
 import com.petshop.dto.VetDTO;
 import com.petshop.exception.IdNotFoundException;
-import com.petshop.mapper.VetMapper;
+import com.petshop.mapper.impl.VetMapper;
 import com.petshop.models.Vet;
 import com.petshop.service.VetService;
 import org.springframework.beans.factory.annotation.Autowired;
