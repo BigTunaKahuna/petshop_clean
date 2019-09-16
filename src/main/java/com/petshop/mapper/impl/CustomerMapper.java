@@ -1,12 +1,12 @@
 package com.petshop.mapper.impl;
 
 import com.petshop.dto.CustomerDTO;
-import com.petshop.mapper.CustomerMapper;
+import com.petshop.mapper.Mapper;
 import com.petshop.models.Customer;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CustomerMapperImpl implements CustomerMapper {
+public class CustomerMapper implements Mapper<Customer, CustomerDTO> {
 
 	@Override
 	public CustomerDTO mapEntityToDto(Customer customerSource) {

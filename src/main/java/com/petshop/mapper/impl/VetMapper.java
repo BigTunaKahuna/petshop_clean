@@ -1,7 +1,7 @@
 package com.petshop.mapper.impl;
 
 import com.petshop.dto.VetDTO;
-import com.petshop.mapper.VetMapper;
+import com.petshop.mapper.Mapper;
 import com.petshop.models.Customer;
 import com.petshop.models.Vet;
 import java.util.ArrayList;
@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class VetMapperImpl implements VetMapper {
+public class VetMapper implements Mapper<Vet, VetDTO> {
 
-	Logger logger = LoggerFactory.getLogger(VetMapperImpl.class);
+	Logger logger = LoggerFactory.getLogger(VetMapper.class);
 
 	@Override
 	public VetDTO mapEntityToDto(Vet vetSource) {
