@@ -3,6 +3,8 @@ package com.petshop.dto;
 import java.util.List;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -10,14 +12,18 @@ import com.petshop.models.Customer;
 
 public class VetDTO {
 	private Long id;
-	@NotEmpty
+	@NotEmpty(message = "Please enter a name")
 	private String name;
-	@NotNull
+	@NotNull(message = "Please enter an age")
+	@Min(value = 18, message = "Age must be at least 18")
+	@Max(value = 70, message = "Age must be less then 80")
 	private Integer age;
-	@NotNull
+	@NotNull(message = "Please enter the years of experience")
+	@Min(value = 1, message = "Experience must be greater then 1")
+	@Max(value = 62, message = "Experience must be less then 62")
 	private double yearsOfExperience;
-	@Email
-	@NotEmpty
+	@Email(message = "Email format is not valid")
+	@NotEmpty(message = "Please enter an email")
 	private String email;
 	private List<Customer> customers;
 

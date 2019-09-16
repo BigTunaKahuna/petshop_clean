@@ -1,6 +1,9 @@
 package com.petshop.models;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
@@ -18,14 +21,18 @@ public class Vet implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "vet_id")
 	private Long id;
-	@NotNull(message = "Please enter a name")
+	@NotEmpty(message = "Please enter a name")
 	private String name;
 	@NotNull(message = "Please enter an age")
+	@Min(value = 18, message = "Age must be at least 18")
+	@Max(value = 70, message = "Age must be less then 80")
 	private Integer age;
 	@NotNull(message = "Please enter the years of experience")
-	private Double yearsOfExperience;
-	@NotNull(message = "Please enter an email")
+	@Min(value = 1, message = "Experience must be greater then 1")
+	@Max(value = 62, message = "Experience must be less then 62")
+	private double yearsOfExperience;
 	@Email(message = "Email format is not valid")
+	@NotEmpty(message = "Please enter an email")
 	private String email;
 	@JsonManagedReference
 	@OneToMany(mappedBy = "vet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
