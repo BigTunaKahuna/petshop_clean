@@ -2,6 +2,7 @@ package com.petshop.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -12,13 +13,13 @@ public class Customer implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@NotNull(message = "Please enter a name")
+	@NotEmpty(message = "Please enter a name")
 	private String name;
-	@NotNull(message = "Please enter a phone number")
+	@NotEmpty(message = "Please enter a phone number")
 	private String phone;
-	@NotNull(message = "Please enter a pet species")
+	@NotEmpty(message = "Please enter a pet species")
 	private String petSpecies;
-	@NotNull(message = "Please enter a pet name")
+	@NotEmpty(message = "Please enter a pet name")
 	private String petName;
 	@JsonBackReference
 	@ManyToOne(fetch = FetchType.LAZY)

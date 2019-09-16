@@ -4,13 +4,13 @@ import javax.validation.constraints.NotEmpty;
 
 public class CustomerDTO {
 	private Long id;
-	@NotEmpty
+	@NotEmpty(message = "Please enter a name")
 	private String name;
-	@NotEmpty
+	@NotEmpty(message = "Please enter a phone number")
 	private String phone;
-	@NotEmpty
+	@NotEmpty(message = "Please enter the pet species")
 	private String petSpecies;
-	@NotEmpty
+	@NotEmpty(message = "Please enter a pet name")
 	private String petName;
 	private String vet;
 
