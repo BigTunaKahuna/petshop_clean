@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.util.ArrayList;
@@ -44,12 +45,12 @@ public class VetControllerTest {
 	public void getVetByIdTest() throws Exception {
 		Vet vet = new Vet(Long.valueOf(1), "Marius", 25, Double.valueOf(3), "foo@gmail.com", new ArrayList<>());
 		VetDTO vetDTO = vetMapper.mapEntityToDto(vet);
-		
+
 		Customer customer = new Customer(Long.valueOf(1), "Adrian", "012345", "Labrador", "Toby", vet);
 		List<Customer> allCustomers = new ArrayList<>();
 		allCustomers.add(customer);
 		vetDTO.setCustomers(allCustomers);
-		
+
 		CompletableFuture<VetDTO> vetFuture = CompletableFuture.completedFuture(vetDTO);
 		given(vetService.getVetById(vetDTO.getId())).willReturn(vetFuture);
 
@@ -118,14 +119,12 @@ public class VetControllerTest {
 
 		given(vetService.saveVet(any(VetDTO.class))).willReturn(vetDTO);
 
-		this.mvc.perform(post("/vet").content(mapper.writeValueAsString(vetDTO)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isCreated())
+		this.mvc.perform(post("/vet").content(mapper.writeValueAsString(vetDTO)).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isCreated())
 
 				// Checking VetJSON values
-				.andExpect(jsonPath("$.id").value(Long.valueOf(1)))
-				.andExpect(jsonPath("$.name").value("Marius"))
-				.andExpect(jsonPath("$.age").value(25))
-				.andExpect(jsonPath("$.yearsOfExperience").value(3))
+				.andExpect(jsonPath("$.id").value(Long.valueOf(1))).andExpect(jsonPath("$.name").value("Marius"))
+				.andExpect(jsonPath("$.age").value(25)).andExpect(jsonPath("$.yearsOfExperience").value(3))
 				.andExpect(jsonPath("$.email").value("foo@gmail.com"));
 	}
 
@@ -138,10 +137,8 @@ public class VetControllerTest {
 
 		this.mvc.perform(put("/vet/1").content(mapper.writeValueAsString(vetDTO2))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.id").value(Long.valueOf(2)))
-				.andExpect(jsonPath("$.name").value("Radu"))
-				.andExpect(jsonPath("$.age").value(50))
+				.andExpect(status().isCreated()).andExpect(jsonPath("$.id").value(Long.valueOf(2)))
+				.andExpect(jsonPath("$.name").value("Radu")).andExpect(jsonPath("$.age").value(50))
 				.andExpect(jsonPath("$.yearsOfExperience").value(25))
 				.andExpect(jsonPath("$.email").value("foo2@gmail.com"));
 	}
@@ -158,6 +155,106 @@ public class VetControllerTest {
 	public void testIdNotFoundException() throws Exception, IdNotFoundException {
 		doThrow(new IdNotFoundException()).when(vetService).getVetById(anyLong());
 		this.mvc.perform(get("/vet/2")).andExpect(status().isNotFound());
+	}
+
+	@Test
+	public void testErrorNoName() throws Exception {
+		VetDTO vetDTO = new VetDTO();
+		vetDTO.setId(1L);
+		vetDTO.setAge(25);
+		vetDTO.setYearsOfExperience(3D);
+		vetDTO.setEmail("foo@gmail.com");
+		vetDTO.setCustomers(new ArrayList<>());
+
+		given(vetService.saveVet(any(VetDTO.class))).willReturn(vetDTO);
+
+		this.mvc.perform(post("/vet").content(mapper.writeValueAsString(vetDTO)).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.status").value(400))
+				.andExpect(jsonPath("$.errors[0]").value("Please enter a name"));
+	}
+
+	@Test
+	public void testMissingEmail() throws Exception {
+		VetDTO vetDTO = new VetDTO();
+		vetDTO.setId(1L);
+		vetDTO.setName("Marius");
+		vetDTO.setAge(25);
+		vetDTO.setYearsOfExperience(3D);
+		vetDTO.setCustomers(new ArrayList<>());
+
+		given(vetService.saveVet(any(VetDTO.class))).willReturn(vetDTO);
+
+		this.mvc.perform(post("/vet").content(mapper.writeValueAsString(vetDTO)).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.status").value(400))
+				.andExpect(jsonPath("$.errors[0]").value("Please enter an email"));
+	}
+
+	@Test
+	public void testMissingExperience() throws Exception {
+		VetDTO vetDTO = new VetDTO();
+		vetDTO.setId(1L);
+		vetDTO.setName("Marius");
+		vetDTO.setAge(25);
+		vetDTO.setEmail("foo@gmail.com");
+		vetDTO.setCustomers(new ArrayList<>());
+
+		given(vetService.saveVet(any(VetDTO.class))).willReturn(vetDTO);
+
+		this.mvc.perform(post("/vet").content(mapper.writeValueAsString(vetDTO)).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.status").value(400))
+				.andExpect(jsonPath("$.errors[0]").value("Experience must be greater then 1"));
+	}
+
+	@Test
+	public void testMissingAge() throws Exception {
+		VetDTO vetDTO = new VetDTO();
+		vetDTO.setId(1L);
+		vetDTO.setName("Marius");
+		vetDTO.setYearsOfExperience(3D);
+		vetDTO.setEmail("foo@gmail.com");
+		vetDTO.setCustomers(new ArrayList<>());
+
+		this.mvc.perform(post("/vet").content(mapper.writeValueAsString(vetDTO)).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.status").value(400))
+				.andExpect(jsonPath("$.errors[0]").value("Please enter an age"));
+	}
+
+	@Test
+	public void testBadEmailFormats() throws Exception {
+		VetDTO email1 = new VetDTO(Long.valueOf(1), "Radu", 50, Double.valueOf(25), "foo", new ArrayList<>());
+
+		this.mvc.perform(post("/vet").content(mapper.writeValueAsString(email1)).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.status").value(400))
+				.andExpect(jsonPath("$.errors[0]").value("Email format is not valid")).andDo(print());
+
+		email1.setEmail("foo@");
+		this.mvc.perform(post("/vet").content(mapper.writeValueAsString(email1)).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.status").value(400))
+				.andExpect(jsonPath("$.errors[0]").value("Email format is not valid")).andDo(print());
+
+		email1.setEmail("foo@.");
+		this.mvc.perform(post("/vet").content(mapper.writeValueAsString(email1)).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.status").value(400))
+				.andExpect(jsonPath("$.errors[0]").value("Email format is not valid"));
+
+		email1.setEmail("foo@ab.");
+		this.mvc.perform(post("/vet").content(mapper.writeValueAsString(email1)).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.status").value(400))
+				.andExpect(jsonPath("$.errors[0]").value("Email format is not valid"));
+
+		email1.setEmail("foo@.c");
+		this.mvc.perform(post("/vet").content(mapper.writeValueAsString(email1)).contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$.status").value(400))
+				.andExpect(jsonPath("$.errors[0]").value("Email format is not valid"));
 	}
 
 }
