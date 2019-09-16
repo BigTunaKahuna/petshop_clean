@@ -44,89 +44,85 @@ public class CustomerControllerTest {
 	private MockMvc mvc;
 	@Autowired
 	private CustomerMapper customerMapper;
-	
+
 	@Test
 	public void testGetCustomerById() throws Exception {
-		Customer customer = new Customer(Long.valueOf(1),"Adrian", "012345", "Labrador", "Toby", new Vet());
-		CustomerDTO customerDTO = customerMapper
-				.mapEntityToDto(customer);
+		Customer customer = new Customer(Long.valueOf(1), "Adrian", "012345", "Labrador", "Toby", new Vet());
+		CustomerDTO customerDTO = customerMapper.mapEntityToDto(customer);
 		given(customerService.getCustomerById(anyLong())).willReturn(customerDTO);
 		this.mvc.perform(get("/customer/1").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.id").value(1))
-			.andExpect(jsonPath("$.name").value("Adrian"))
-			.andExpect(jsonPath("$.phone").value("012345"))
-			.andExpect(jsonPath("$.petSpecies").value("Labrador"))
-			.andExpect(jsonPath("$.petName").value("Toby"));
+				.andExpect(status().isOk()).andExpect(jsonPath("$.id").value(1))
+				.andExpect(jsonPath("$.name").value("Adrian")).andExpect(jsonPath("$.phone").value("012345"))
+				.andExpect(jsonPath("$.petSpecies").value("Labrador")).andExpect(jsonPath("$.petName").value("Toby"));
 	}
-	
+
 	@Test
-	public void testGetAllCustomers() throws Exception{
+	public void testGetAllCustomers() throws Exception {
 		List<CustomerDTO> allCustomers = new ArrayList<>();
 		CustomerDTO customer1 = customerMapper
-				.mapEntityToDto(new Customer(Long.valueOf(1),"Adrian", "012345", "Labrador", "Toby", new Vet()));
+				.mapEntityToDto(new Customer(Long.valueOf(1), "Adrian", "012345", "Labrador", "Toby", new Vet()));
 		CustomerDTO customer2 = customerMapper
-				.mapEntityToDto(new Customer(Long.valueOf(2),"Andrei", "054321", "Bichon", "Ali", new Vet()));
+				.mapEntityToDto(new Customer(Long.valueOf(2), "Andrei", "054321", "Bichon", "Ali", new Vet()));
 
 		allCustomers.add(customer1);
 		allCustomers.add(customer2);
-		
+
 		given(customerService.getAllCustomers()).willReturn(allCustomers);
-		
-		this.mvc.perform(get("/customer/all").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			
-			// Checking the first CustomerJSON
-			.andExpect(jsonPath("$[0].id").value(1))
-			.andExpect(jsonPath("$[0].name").value("Adrian"))
-			.andExpect(jsonPath("$[0].phone").value("012345"))
-			.andExpect(jsonPath("$[0].petSpecies").value("Labrador"))
-			.andExpect(jsonPath("$[0].petName").value("Toby"))
-			.andExpect(jsonPath("$[0].vet").value(IsNull.nullValue()))
-			
-			// Checking the second CustomerJSON
-			.andExpect(jsonPath("$[1].id").value(2))
-			.andExpect(jsonPath("$[1].name").value("Andrei"))
-			.andExpect(jsonPath("$[1].phone").value("054321"))
-			.andExpect(jsonPath("$[1].petSpecies").value("Bichon"))
-			.andExpect(jsonPath("$[1].petName").value("Ali"))
-			.andExpect(jsonPath("$[1].vet").value(IsNull.nullValue()));
+
+		this.mvc.perform(
+				get("/customer/all").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+
+				// Checking the first CustomerJSON
+				.andExpect(jsonPath("$[0].id").value(1)).andExpect(jsonPath("$[0].name").value("Adrian"))
+				.andExpect(jsonPath("$[0].phone").value("012345"))
+				.andExpect(jsonPath("$[0].petSpecies").value("Labrador"))
+				.andExpect(jsonPath("$[0].petName").value("Toby"))
+				.andExpect(jsonPath("$[0].vet").value(IsNull.nullValue()))
+
+				// Checking the second CustomerJSON
+				.andExpect(jsonPath("$[1].id").value(2)).andExpect(jsonPath("$[1].name").value("Andrei"))
+				.andExpect(jsonPath("$[1].phone").value("054321"))
+				.andExpect(jsonPath("$[1].petSpecies").value("Bichon")).andExpect(jsonPath("$[1].petName").value("Ali"))
+				.andExpect(jsonPath("$[1].vet").value(IsNull.nullValue()));
 	}
-	
+
 	@Test
-	public void testSaveCustomer() throws Exception{
+	public void testSaveCustomer() throws Exception {
 		CustomerDTO customer = customerMapper
-				.mapEntityToDto(new Customer(Long.valueOf(1),"Adrian", "012345", "Labrador", "Toby", new Vet()));
-		
-		given(customerService.saveCustomer(anyLong(),any(CustomerDTO.class))).willReturn(customer);
-		
-		this.mvc.perform(post("/customer/vet/1").content(mapper.writeValueAsString(customer)).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isCreated())
-			
-			.andExpect(jsonPath("$.id").value(1))
-			.andExpect(jsonPath("$.name").value("Adrian"))
-			.andExpect(jsonPath("$.phone").value("012345"))
-			.andExpect(jsonPath("$.petSpecies").value("Labrador"))
-			.andExpect(jsonPath("$.petName").value("Toby"));
+				.mapEntityToDto(new Customer(Long.valueOf(1), "Adrian", "012345", "Labrador", "Toby", new Vet()));
+
+		given(customerService.saveCustomer(anyLong(), any(CustomerDTO.class))).willReturn(customer);
+
+		this.mvc.perform(post("/customer/vet/1").content(mapper.writeValueAsString(customer))
+				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated())
+
+				.andExpect(jsonPath("$.id").value(1)).andExpect(jsonPath("$.name").value("Adrian"))
+				.andExpect(jsonPath("$.phone").value("012345")).andExpect(jsonPath("$.petSpecies").value("Labrador"))
+				.andExpect(jsonPath("$.petName").value("Toby"));
 	}
-	
+
 	@Test
-	public void testUpdateCustomer() throws Exception{
+	public void testUpdateCustomer() throws Exception {
 		CustomerDTO customer = customerMapper
-				.mapEntityToDto(new Customer(Long.valueOf(1),"Adrian", "012345", "Labrador", "Toby", new Vet()));
-		
-		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customer)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isCreated());
+				.mapEntityToDto(new Customer(Long.valueOf(1), "Adrian", "012345", "Labrador", "Toby", new Vet()));
+
+		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customer))
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated());
 	}
-	
+
 	@Test
 	public void testUpdateVetForCustomer() throws JsonProcessingException, Exception {
 		CustomerDTO customer = customerMapper
-				.mapEntityToDto(new Customer(Long.valueOf(1),"Adrian", "012345", "Labrador", "Toby", new Vet()));
-		
-		this.mvc.perform(put("/customer/1/1").content(mapper.writeValueAsString(customer)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isCreated());	}
-	
+				.mapEntityToDto(new Customer(Long.valueOf(1), "Adrian", "012345", "Labrador", "Toby", new Vet()));
+
+		this.mvc.perform(put("/customer/1/1").content(mapper.writeValueAsString(customer))
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated());
+	}
+
 	@Test
 	public void testDeleteVetById() throws Exception {
 		this.mvc.perform(delete("/customer/1")).andExpect(status().isOk());
@@ -134,15 +130,70 @@ public class CustomerControllerTest {
 		String content = this.mvc.perform(delete("/customer/1")).andReturn().getResponse().getContentAsString();
 		assertEquals(content, "The customer was deleted succesfully!");
 	}
-	
+
 	@Test
 	public void testIdNotFoundException() throws Exception, IdNotFoundException {
 		doThrow(new IdNotFoundException()).when(customerService).getCustomerById(anyLong());
 		this.mvc.perform(get("/customer/1")).andExpect(status().isNotFound());
 	}
+
+	@Test
+	public void testMissingName() throws JsonProcessingException, Exception {
+		CustomerDTO customer = new CustomerDTO();
+		customer.setPhone("012345");
+		customer.setPetSpecies("Labrador");
+		customer.setPetName("Toby");
+		customer.setVet("Vet");
+		
+		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customer)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.status").value("400"))
+			.andExpect(jsonPath("$.errors[0]").value("Please enter a name"));
+	}
+	
+	@Test
+	public void testMissingPhone() throws JsonProcessingException, Exception {
+		CustomerDTO customer = new CustomerDTO();
+		customer.setName("Andrei");
+		customer.setPetSpecies("Labrador");
+		customer.setPetName("Toby");
+		customer.setVet("Vet");
+		
+		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customer)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.status").value("400"))
+			.andExpect(jsonPath("$.errors[0]").value("Please enter a phone number"));
+	}
+	
+	@Test
+	public void testMissingPetSpecies() throws JsonProcessingException, Exception {
+		CustomerDTO customer = new CustomerDTO();
+		customer.setName("Andrei");
+		customer.setPhone("012345");
+		customer.setPetName("Toby");
+		customer.setVet("Vet");
+		
+		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customer)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.status").value("400"))
+			.andExpect(jsonPath("$.errors[0]").value("Please enter the pet species"));
+	}
+	
+	@Test
+	public void testMissingPetName() throws JsonProcessingException, Exception {
+		CustomerDTO customer = new CustomerDTO();
+		customer.setName("Andrei");
+		customer.setPhone("012345");
+		customer.setPetSpecies("Labrador");
+		customer.setVet("Vet");
+		
+		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customer)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.status").value("400"))
+			.andExpect(jsonPath("$.errors[0]").value("Please enter a pet name"));
+	}
+	
 }
-
-
 
 
 
