@@ -144,13 +144,13 @@ public class CustomerControllerTest {
 		customer.setPetSpecies("Labrador");
 		customer.setPetName("Toby");
 		customer.setVet("Vet");
-		
-		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customer)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.status").value("400"))
-			.andExpect(jsonPath("$.errors[0]").value("Please enter a name"));
+
+		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customer))
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value("400"))
+				.andExpect(jsonPath("$.errors[0]").value("Please enter a name"));
 	}
-	
+
 	@Test
 	public void testMissingPhone() throws JsonProcessingException, Exception {
 		CustomerDTO customer = new CustomerDTO();
@@ -158,13 +158,13 @@ public class CustomerControllerTest {
 		customer.setPetSpecies("Labrador");
 		customer.setPetName("Toby");
 		customer.setVet("Vet");
-		
-		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customer)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.status").value("400"))
-			.andExpect(jsonPath("$.errors[0]").value("Please enter a phone number"));
+
+		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customer))
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value("400"))
+				.andExpect(jsonPath("$.errors[0]").value("Please enter a phone number"));
 	}
-	
+
 	@Test
 	public void testMissingPetSpecies() throws JsonProcessingException, Exception {
 		CustomerDTO customer = new CustomerDTO();
@@ -172,13 +172,13 @@ public class CustomerControllerTest {
 		customer.setPhone("012345");
 		customer.setPetName("Toby");
 		customer.setVet("Vet");
-		
-		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customer)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.status").value("400"))
-			.andExpect(jsonPath("$.errors[0]").value("Please enter the pet species"));
+
+		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customer))
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value("400"))
+				.andExpect(jsonPath("$.errors[0]").value("Please enter the pet species"));
 	}
-	
+
 	@Test
 	public void testMissingPetName() throws JsonProcessingException, Exception {
 		CustomerDTO customer = new CustomerDTO();
@@ -186,29 +186,11 @@ public class CustomerControllerTest {
 		customer.setPhone("012345");
 		customer.setPetSpecies("Labrador");
 		customer.setVet("Vet");
-		
-		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customer)).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.status").value("400"))
-			.andExpect(jsonPath("$.errors[0]").value("Please enter a pet name"));
+
+		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customer))
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value("400"))
+				.andExpect(jsonPath("$.errors[0]").value("Please enter a pet name"));
 	}
-	
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
