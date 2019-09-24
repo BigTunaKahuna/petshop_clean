@@ -3,6 +3,7 @@ package com.petshop.mapper.impl;
 import com.petshop.dto.CustomerDTO;
 import com.petshop.mapper.Mapper;
 import com.petshop.models.Customer;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,6 +20,10 @@ public class CustomerMapper implements Mapper<Customer, CustomerDTO> {
 
 			if (customerSource.getName() != null) {
 				customerDTO.setName(customerSource.getName());
+			}
+
+			if (customerSource.getEmail() != null) {
+				customerDTO.setEmail(customerSource.getEmail());
 			}
 
 			if (customerSource.getPetName() != null) {
@@ -52,6 +57,10 @@ public class CustomerMapper implements Mapper<Customer, CustomerDTO> {
 
 			if (customerDTO.getName() != null) {
 				customer.setName(customerDTO.getName());
+			}
+
+			if (customerDTO.getEmail() != null) {
+				customer.setEmail(customerDTO.getEmail());
 			}
 
 			if (customerDTO.getPetName() != null) {

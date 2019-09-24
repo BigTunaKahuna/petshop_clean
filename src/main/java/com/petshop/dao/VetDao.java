@@ -15,4 +15,6 @@ public interface VetDao {
 	Vet updateVet(Long id, Vet vet);
 
 	void deleteVetById(Long id);
+
+	Boolean checkEmail(String email);
 }

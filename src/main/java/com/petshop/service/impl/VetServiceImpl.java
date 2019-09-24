@@ -2,10 +2,12 @@ package com.petshop.service.impl;
 
 import com.petshop.dao.VetDao;
 import com.petshop.dto.VetDTO;
+import com.petshop.exception.EmailAlreadyExistsException;
 import com.petshop.exception.IdNotFoundException;
 import com.petshop.mapper.impl.VetMapper;
 import com.petshop.models.Vet;
 import com.petshop.service.VetService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -43,6 +45,9 @@ public class VetServiceImpl implements VetService {
 
 	@Override
 	public VetDTO saveVet(VetDTO vetDTO) {
+		if (vetDao.checkEmail(vetDTO.getEmail())) {
+			throw new EmailAlreadyExistsException();
+		}
 		Vet vet = vetMapper.mapDtoToEntity(vetDTO);
 		return vetMapper.mapEntityToDto(vetDao.saveVet(vet));
 	}

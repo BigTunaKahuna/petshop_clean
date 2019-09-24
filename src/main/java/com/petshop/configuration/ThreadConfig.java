@@ -17,10 +17,10 @@ public class ThreadConfig {
 	@Primary
 	public Executor taskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(3);
+		executor.setCorePoolSize(5);
 		executor.setMaxPoolSize(9);
 		executor.setQueueCapacity(500);
-		executor.setThreadNamePrefix("GetVet-");
+		executor.setThreadNamePrefix("Thread-");
 		executor.initialize();
 		return executor;
 	}

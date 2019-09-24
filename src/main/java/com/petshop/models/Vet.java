@@ -5,6 +5,10 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.UniqueElements;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,28 +25,38 @@ public class Vet implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "vet_id")
 	private Long id;
+	
 	@NotEmpty(message = "Please enter a name")
 	private String name;
+	
+	@NotEmpty(message = "Please enter a password")
+	@Size(min = 6, max = 20)
+	private String password;
+	
 	@NotNull(message = "Please enter an age")
 	@Min(value = 18, message = "Age must be at least 18")
 	@Max(value = 70, message = "Age must be less then 80")
 	private Integer age;
+	
 	@NotNull(message = "Please enter the years of experience")
 	@Min(value = 1, message = "Experience must be greater then 1")
 	@Max(value = 62, message = "Experience must be less then 62")
 	private double yearsOfExperience;
+	
 	@Email(message = "Email format is not valid")
 	@NotEmpty(message = "Please enter an email")
 	private String email;
+	
 	@JsonManagedReference
 	@OneToMany(mappedBy = "vet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<Customer> customers = new ArrayList<>();
 
-	public Vet(Long id, @NotNull String name, @NotNull int age, @NotNull double yearsOfExperience,
-			@NotNull @Email String email, List<Customer> customers) {
+	public Vet(Long id, @NotEmpty String name, @NotEmpty String password, @NotNull int age,
+			@NotNull double yearsOfExperience, @NotEmpty @Email String email, List<Customer> customers) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.password = password;
 		this.age = age;
 		this.yearsOfExperience = yearsOfExperience;
 		this.email = email;
@@ -76,6 +90,14 @@ public class Vet implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public Integer getAge() {

@@ -45,4 +45,15 @@ public class VetDaoImpl implements VetDao {
 		vetRepository.deleteById(id);
 	}
 
+	@Override
+	public Boolean checkEmail(String email) {
+		Boolean exists = false;
+		if (vetRepository.findByEmail(email) != null) {
+			exists = true;
+			return exists;
+		}
+
+		return exists;
+	}
+
 }
