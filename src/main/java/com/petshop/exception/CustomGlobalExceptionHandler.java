@@ -29,6 +29,16 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
 		return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
 	}
+	
+	@ExceptionHandler(EmailAlreadyExistsException.class)
+	public ResponseEntity<CustomErrorResponse> customHandleNotFound(EmailAlreadyExistsException ex, WebRequest request) {
+		CustomErrorResponse errors = new CustomErrorResponse();
+		errors.setTimeStamp(LocalDateTime.now());
+		errors.setError(ex.getMessage());
+		errors.setStatus(HttpStatus.CONFLICT.value());
+
+		return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
+	}
 
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
