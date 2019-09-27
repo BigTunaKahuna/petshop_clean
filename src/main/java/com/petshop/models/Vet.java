@@ -7,12 +7,12 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.UniqueElements;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -25,31 +25,49 @@ public class Vet implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "vet_id")
 	private Long id;
-	
+
 	@NotEmpty(message = "Please enter a name")
 	private String name;
-	
+
 	@NotEmpty(message = "Please enter a password")
-	@Size(min = 6, max = 20)
+	@Size(min = 6, max = 20, message = "Password must be between 6 and 20 characters")
 	private String password;
-	
+
 	@NotNull(message = "Please enter an age")
 	@Min(value = 18, message = "Age must be at least 18")
 	@Max(value = 70, message = "Age must be less then 80")
 	private Integer age;
-	
+
 	@NotNull(message = "Please enter the years of experience")
 	@Min(value = 1, message = "Experience must be greater then 1")
 	@Max(value = 62, message = "Experience must be less then 62")
 	private double yearsOfExperience;
-	
+
 	@Email(message = "Email format is not valid")
 	@NotEmpty(message = "Please enter an email")
 	private String email;
-	
+
 	@JsonManagedReference
 	@OneToMany(mappedBy = "vet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<Customer> customers = new ArrayList<>();
+
+	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST },fetch = FetchType.EAGER)
+	@JoinTable(name = "vet_role", joinColumns = @JoinColumn(name = "vet_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Authority> roles = new HashSet<>();
+
+	public Vet(Long id, @NotEmpty String name, @NotEmpty String password, @NotNull int age,
+			@NotNull double yearsOfExperience, @NotEmpty @Email String email, List<Customer> customers,
+			Set<Authority> roles) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.password = password;
+		this.age = age;
+		this.yearsOfExperience = yearsOfExperience;
+		this.email = email;
+		this.customers = customers;
+		this.roles = roles;
+	}
 
 	public Vet(Long id, @NotEmpty String name, @NotEmpty String password, @NotNull int age,
 			@NotNull double yearsOfExperience, @NotEmpty @Email String email, List<Customer> customers) {
@@ -140,6 +158,22 @@ public class Vet implements Serializable {
 	public void removeCustomer(Customer customer) {
 		customers.remove(customer);
 		customer.setVet(null);
+	}
+
+	public Set<Authority> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Authority> roles) {
+		this.roles = roles;
+	}
+
+	public void addRole(Authority role) {
+		roles.add(role);
+	}
+
+	public void removeRole(Authority role) {
+		roles.remove(role);
 	}
 
 	@Override

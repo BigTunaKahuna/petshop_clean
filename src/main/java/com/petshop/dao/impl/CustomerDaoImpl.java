@@ -86,5 +86,16 @@ public class CustomerDaoImpl implements CustomerDao {
 			throw new IdNotFoundException();
 		}
 	}
+	
+	@Override
+	public Boolean checkEmail(String email) {
+		Boolean exists = false;
+		if (customerRepository.findByEmail(email) != null) {
+			exists = true;
+			return exists;
+		}
+
+		return exists;
+	}
 
 }

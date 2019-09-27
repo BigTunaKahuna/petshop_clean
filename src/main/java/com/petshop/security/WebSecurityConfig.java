@@ -14,61 +14,60 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.header.HeaderWriter;
+
+import com.petshop.models.VetDetailsService;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	UserDetailsService userDetailsService;
-	
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("username").password(encoder().encode("password")).roles("USER").and()
-				.withUser("admin").password(cryptPassword("password")).roles("USER", "ADMIN");
-	}
-	
+	VetDetailsService userDetailsService;
+
+	@Bean
 	protected AuthenticationProvider authProvider() {
-		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+		final DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+		provider.setUserDetailsService(userDetailsService);
+		provider.setPasswordEncoder(encoder());
 		return provider;
-		
 	}
+
+//	@Override
+//	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//		auth.userDetailsService(userDetailsService);
+//	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		HeaderWriter foo = (request,response) -> {     
-				response.addHeader("Access-Control-Allow-Origin", "*");
-				response.addHeader("Access-Control-Request-Headers", "*");
-				response.addHeader("Access-Control-Allow-Headers", "*");
-				response.setStatus(HttpStatus.OK.value());
-				request.getCookies();
-		};
-		http
-			.headers().addHeaderWriter(foo).and()			
-			.httpBasic().and()
+		http.httpBasic().and()
 			.authorizeRequests()
-			.antMatchers(HttpMethod.POST,"/login").permitAll()
-			.antMatchers(HttpMethod.GET, "/vet/1").hasRole("USER")
-			.antMatchers(HttpMethod.GET, "/vet/all").hasRole("ADMIN")
-			.antMatchers(HttpMethod.POST, "/vet/**").hasRole("USER")
-			.antMatchers(HttpMethod.GET, "/customer/**").hasRole("ADMIN")
-			.anyRequest().authenticated().and()			
-			.formLogin().loginPage("/login").permitAll().and()
-			.logout().and()
-			.csrf().disable();
+			.antMatchers(HttpMethod.POST, "/vet").permitAll()
+			.antMatchers(HttpMethod.GET, "/vet/**").hasAnyRole()
+			.and()
+			.formLogin()
+			.and()
+			.logout()
+			.and()
+			.csrf().disable();	
+		}
+	
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) {
+		auth.authenticationProvider(authProvider());
 	}
 
 	@Bean
 	public PasswordEncoder encoder() {
-		return new BCryptPasswordEncoder();
+		return NoOpPasswordEncoder.getInstance();
 	}
-	
-	@Bean
-	public String cryptPassword(String password) {
-		String salt = BCrypt.gensalt();
-		return BCrypt.hashpw(password, salt);
-	}
+
+//	@Bean
+//	public String cryptPassword(String password) {
+//		String salt = BCrypt.gensalt();
+//		return BCrypt.hashpw(password, salt);
+//	}
 
 }

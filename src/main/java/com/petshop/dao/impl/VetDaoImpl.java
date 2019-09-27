@@ -5,7 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.petshop.dao.VetDao;
 import com.petshop.exception.IdNotFoundException;
+import com.petshop.models.Authority;
+import com.petshop.models.Roles;
 import com.petshop.models.Vet;
+import com.petshop.repository.RolesRepository;
 import com.petshop.repository.VetRepository;
 
 @Repository
@@ -13,6 +16,9 @@ public class VetDaoImpl implements VetDao {
 
 	@Autowired
 	private VetRepository vetRepository;
+	
+	@Autowired
+	private RolesRepository roleRepository;
 
 	@Override
 	public Vet getVetById(Long id) {
@@ -26,6 +32,11 @@ public class VetDaoImpl implements VetDao {
 
 	@Override
 	public Vet saveVet(Vet vet) {
+		Authority role = new Authority();
+		role.setRoles(Roles.ADMIN);
+		
+		roleRepository.save(role);
+		vet.addRole(role);
 		return vetRepository.save(vet);
 	}
 
@@ -43,6 +54,12 @@ public class VetDaoImpl implements VetDao {
 	@Override
 	public void deleteVetById(Long id) {
 		vetRepository.deleteById(id);
+	}
+	
+	@Override
+	public Vet findByEmail(String email) {
+		System.out.println("vet " +vetRepository.findByEmail(email).toString());
+		return vetRepository.findByEmail(email);
 	}
 
 	@Override

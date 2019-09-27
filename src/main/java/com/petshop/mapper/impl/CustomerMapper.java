@@ -26,6 +26,14 @@ public class CustomerMapper implements Mapper<Customer, CustomerDTO> {
 				customerDTO.setEmail(customerSource.getEmail());
 			}
 
+			if (customerSource.getPassword() != null) {
+				customerDTO.setPassword(customerSource.getPassword());
+			}
+
+			if (customerSource.getEmail() != null) {
+				customerDTO.setEmail(customerSource.getEmail());
+			}
+
 			if (customerSource.getPetName() != null) {
 				customerDTO.setPetName(customerSource.getPetName());
 			}
@@ -61,6 +69,10 @@ public class CustomerMapper implements Mapper<Customer, CustomerDTO> {
 
 			if (customerDTO.getEmail() != null) {
 				customer.setEmail(customerDTO.getEmail());
+			}
+
+			if (customerDTO.getPassword() != null) {
+				customer.setPassword(customerDTO.getPassword());
 			}
 
 			if (customerDTO.getPetName() != null) {

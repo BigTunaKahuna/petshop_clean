@@ -2,6 +2,7 @@ package com.petshop.service.impl;
 
 import com.petshop.dao.CustomerDao;
 import com.petshop.dto.CustomerDTO;
+import com.petshop.exception.EmailAlreadyExistsException;
 import com.petshop.exception.IdNotFoundException;
 import com.petshop.mapper.impl.CustomerMapper;
 import com.petshop.models.Customer;
@@ -17,7 +18,7 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
 	@Autowired
 	private CustomerDao customerDao;
-	@Autowired	
+	@Autowired
 	private CustomerMapper customerMapper;
 
 	@Override
@@ -38,6 +39,9 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public CustomerDTO saveCustomer(Long vetId, CustomerDTO customerDTO) {
+		if (customerDao.checkEmail(customerDTO.getEmail())) {
+			throw new EmailAlreadyExistsException();
+		}
 		Customer customer = customerMapper.mapDtoToEntity(customerDTO);
 		return customerMapper.mapEntityToDto(customerDao.saveCustomer(vetId, customer));
 	}

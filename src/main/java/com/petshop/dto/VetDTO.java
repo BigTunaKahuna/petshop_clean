@@ -13,24 +13,24 @@ import com.petshop.models.Customer;
 
 public class VetDTO {
 	private Long id;
-	
+
 	@NotEmpty(message = "Please enter a name")
 	private String name;
-	
+
 	@NotEmpty(message = "Please enter a password")
-	@Size(min = 6, max = 20)
+	@Size(min = 6, max = 20, message = "Password must be between 6 and 20 characters")
 	private String password;
-	
+
 	@NotNull(message = "Please enter an age")
 	@Min(value = 18, message = "Age must be at least 18")
 	@Max(value = 70, message = "Age must be less then 80")
 	private Integer age;
-	
+
 	@NotNull(message = "Please enter the years of experience")
 	@Min(value = 1, message = "Experience must be greater then 1")
 	@Max(value = 62, message = "Experience must be less then 62")
 	private double yearsOfExperience;
-	
+
 	@Email(message = "Email format is not valid")
 	@NotEmpty(message = "Please enter an email")
 	private String email;
@@ -45,7 +45,8 @@ public class VetDTO {
 				+ ", email=" + email + "]";
 	}
 
-	public VetDTO(Long id, String name,String password, int age, double yearsOfExperience, String email, List<Customer> customers) {
+	public VetDTO(Long id, String name, String password, int age, double yearsOfExperience, String email,
+			List<Customer> customers) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -71,11 +72,11 @@ public class VetDTO {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getPassword() {
 		return password;
 	}
-	
+
 	public void setPassword(String password) {
 		this.password = password;
 	}

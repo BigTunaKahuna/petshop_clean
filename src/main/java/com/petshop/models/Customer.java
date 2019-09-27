@@ -3,12 +3,8 @@ package com.petshop.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-
-import org.hibernate.validator.constraints.UniqueElements;
 
 import java.io.Serializable;
 
@@ -28,8 +24,7 @@ public class Customer implements Serializable {
 	private String email;
 
 	@NotEmpty(message = "Please enter a password")
-	@Min(value = 6)
-	@Max(value = 20)
+	@Size(min = 6, max = 20, message = "Password must be between 6 and 20 characters")
 	private String password;
 
 	@NotEmpty(message = "Please enter a phone number")
