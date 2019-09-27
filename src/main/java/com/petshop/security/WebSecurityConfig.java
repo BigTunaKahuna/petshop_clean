@@ -17,11 +17,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.header.HeaderWriter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.petshop.models.VetDetailsService;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -39,17 +42,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //		auth.userDetailsService(userDetailsService);
 //	}
-
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.httpBasic().and()
+		http
 			.authorizeRequests()
+			.antMatchers(HttpMethod.GET, "/vet/**").hasAnyAuthority("USER")
 			.antMatchers(HttpMethod.POST, "/vet").permitAll()
-			.antMatchers(HttpMethod.GET, "/vet/**").hasAnyRole()
 			.and()
 			.formLogin()
 			.and()
 			.logout()
+			.and()
+			.httpBasic()
 			.and()
 			.csrf().disable();	
 		}
