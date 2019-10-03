@@ -1,0 +1,2 @@
+--INSERT INTO authority (id, roles) VALUES ('1', 'ADMIN');
+--INSERT INTO authority (id, roles) VALUES ('2', 'USER');

@@ -1,17 +1,22 @@
 package com.petshop.controller;
 
 import com.petshop.dto.VetDTO;
-import com.petshop.models.Vet;
-import com.petshop.repository.VetRepository;
+import com.petshop.models.authority.Authority;
+import com.petshop.models.authority.Role;
+import com.petshop.repository.RoleRepository;
 import com.petshop.service.VetService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
 import javax.validation.Valid;
+
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -20,9 +25,6 @@ public class VetController {
 
 	@Autowired
 	private VetService vetService;
-	
-	@Autowired
-	private VetRepository vetRepository;
 
 	Logger logger = LoggerFactory.getLogger(VetController.class);
 
@@ -31,8 +33,6 @@ public class VetController {
 	public ResponseEntity<VetDTO> getVetById(@PathVariable(value = "id") Long id) {
 		try {
 			VetDTO vet = vetService.getVetById(id).join();
-			Vet vet1 = vetRepository.findById(1L).orElseThrow();
-			logger.warn("Vet Role:{}",vet1.toString());
 			logger.info("Thread {} executed successfuly!", Thread.currentThread().getName());
 			return new ResponseEntity<>(vet, HttpStatus.OK);
 		} catch (InterruptedException e) {
@@ -68,6 +68,22 @@ public class VetController {
 	public ResponseEntity<String> deleteVetById(@PathVariable(value = "id") Long id) {
 		vetService.deleteVetById(id);
 		return new ResponseEntity<>("The vet was deleted succesfully!", HttpStatus.OK);
+	}
+
+	@Autowired
+	RoleRepository rolesRepo;
+
+	// REQUEST:GET @PATH: /vet/all - Get all vets
+	@GetMapping("/role")
+	public ResponseEntity<String> addRole() throws SQLException{
+		try {
+			Authority auth = new Authority();
+			auth.setRoles(Role.ADMIN);
+			rolesRepo.save(auth);
+			return new ResponseEntity<>("Am adaugat rol", HttpStatus.CREATED);
+		} catch (DataIntegrityViolationException e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT);
+		}
 	}
 
 }

@@ -5,9 +5,11 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.petshop.models.authority.Authority;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,7 +32,6 @@ public class Vet implements Serializable {
 	private String name;
 
 	@NotEmpty(message = "Please enter a password")
-	@Size(min = 6, max = 20, message = "Password must be between 6 and 20 characters")
 	private String password;
 
 	@NotNull(message = "Please enter an age")
@@ -51,9 +52,9 @@ public class Vet implements Serializable {
 	@OneToMany(mappedBy = "vet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<Customer> customers = new ArrayList<>();
 
-	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST },fetch = FetchType.EAGER)
+	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.EAGER)
 	@JoinTable(name = "vet_role", joinColumns = @JoinColumn(name = "vet_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Authority> roles = new HashSet<>();
+	private Set<Authority> role = new HashSet<>();
 
 	public Vet(Long id, @NotEmpty String name, @NotEmpty String password, @NotNull int age,
 			@NotNull double yearsOfExperience, @NotEmpty @Email String email, List<Customer> customers,
@@ -66,7 +67,7 @@ public class Vet implements Serializable {
 		this.yearsOfExperience = yearsOfExperience;
 		this.email = email;
 		this.customers = customers;
-		this.roles = roles;
+		this.role = roles;
 	}
 
 	public Vet(Long id, @NotEmpty String name, @NotEmpty String password, @NotNull int age,
@@ -161,19 +162,19 @@ public class Vet implements Serializable {
 	}
 
 	public Set<Authority> getRoles() {
-		return roles;
+		return role;
 	}
 
-	public void setRoles(Set<Authority> roles) {
-		this.roles = roles;
+	public void setRoles(Set<Authority> role) {
+		this.role = role;
 	}
 
-	public void addRole(Authority role) {
-		roles.add(role);
+	public void addRole(Authority auth) {
+		role.add(auth);
 	}
 
-	public void removeRole(Authority role) {
-		roles.remove(role);
+	public void removeRole(Authority auth) {
+		role.remove(auth);
 	}
 
 	@Override

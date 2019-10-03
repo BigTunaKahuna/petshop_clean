@@ -1,31 +1,26 @@
-package com.petshop.models;
+package com.petshop.models.authority;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.petshop.models.Vet;
+
 public class VetPrincipal implements UserDetails {
 
 	private static final long serialVersionUID = -5338048780781990225L;
 	private Vet vet;
-	private GrantedAuthority authorities;
 
 	public VetPrincipal(Vet vet) {
-
-		this.authorities = authorities;
 		this.vet = vet;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		  final List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("USER"));
-	        return authorities;
+	        return vet.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getRole().toString())).collect(Collectors.toList());
 	}
 
 	@Override

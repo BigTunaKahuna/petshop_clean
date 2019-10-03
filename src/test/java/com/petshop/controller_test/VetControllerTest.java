@@ -43,7 +43,8 @@ public class VetControllerTest {
 
 	@Test
 	public void getVetByIdTest() throws Exception {
-		Vet vet = new Vet(Long.valueOf(1), "Marius", 25, Double.valueOf(3), "foo@gmail.com", new ArrayList<>());
+		Vet vet = new Vet(Long.valueOf(1), "Marius", "password", 25, Double.valueOf(3), "foo@gmail.com",
+				new ArrayList<>());
 		VetDTO vetDTO = vetMapper.mapEntityToDto(vet);
 
 		Customer customer = new Customer(Long.valueOf(1), "Adrian", "012345", "Labrador", "Toby", vet);
@@ -88,8 +89,10 @@ public class VetControllerTest {
 
 	@Test
 	public void testGetAllVets() throws Exception {
-		Vet vet1 = new Vet(Long.valueOf(1), "Marius", 25, Double.valueOf(3), "foo@gmail.com", new ArrayList<>());
-		Vet vet2 = new Vet(Long.valueOf(2), "Radu", 50, Double.valueOf(25), "foo2@gmail.com", new ArrayList<>());
+		Vet vet1 = new Vet(Long.valueOf(1), "Marius", "password", 25, Double.valueOf(3), "foo@gmail.com",
+				new ArrayList<>());
+		Vet vet2 = new Vet(Long.valueOf(2), "Radu", "password", 50, Double.valueOf(25), "foo2@gmail.com",
+				new ArrayList<>());
 		VetDTO vetDTO1 = vetMapper.mapEntityToDto(vet1);
 		VetDTO vetDTO2 = vetMapper.mapEntityToDto(vet2);
 		List<VetDTO> allVets = new ArrayList<>();
@@ -114,7 +117,8 @@ public class VetControllerTest {
 
 	@Test
 	public void testSaveVet() throws Exception {
-		Vet vet = new Vet(Long.valueOf(1), "Marius", 25, Double.valueOf(3), "foo@gmail.com", new ArrayList<>());
+		Vet vet = new Vet(Long.valueOf(1), "Marius", "password", 25, Double.valueOf(3), "foo@gmail.com",
+				new ArrayList<>());
 		VetDTO vetDTO = vetMapper.mapEntityToDto(vet);
 
 		given(vetService.saveVet(any(VetDTO.class))).willReturn(vetDTO);
@@ -130,7 +134,8 @@ public class VetControllerTest {
 
 	@Test
 	public void testUpdateVet() throws Exception {
-		Vet vet = new Vet(Long.valueOf(2), "Radu", 50, Double.valueOf(25), "foo2@gmail.com", new ArrayList<>());
+		Vet vet = new Vet(Long.valueOf(2), "Radu", "password", 50, Double.valueOf(25), "foo2@gmail.com",
+				new ArrayList<>());
 		VetDTO vetDTO2 = vetMapper.mapEntityToDto(vet);
 
 		given(vetService.updateVet(anyLong(), any(VetDTO.class))).willReturn(vetDTO2);

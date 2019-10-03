@@ -1,5 +1,7 @@
-package com.petshop.models;
+package com.petshop.models.authority;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -7,24 +9,23 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.petshop.dao.VetDao;
+import com.petshop.models.Vet;
 
 @Service
 public class VetDetailsService implements UserDetailsService {
 
+	private static final Logger log = LoggerFactory.getLogger(VetDetailsService.class);
+
 	@Autowired
 	private VetDao vetDao;
-	
-	private String role; 
 
 	@Override
 	public UserDetails loadUserByUsername(String username) {
 		Vet vet = vetDao.findByEmail(username);
 		if (vet == null)
 			throw new UsernameNotFoundException("User not found!");
-		System.out.println("Vet: "+ vet.toString());
-		System.out.println("Vet principal " + new VetPrincipal(vet).getAuthorities());
-		System.out.println("Vet principal " + new VetPrincipal(vet).getPassword());
-		System.out.println("Vet principal " + new VetPrincipal(vet).toString());
+
+		log.warn("Parola este: {}", vet.getPassword());
 		return new VetPrincipal(vet);
 	}
 

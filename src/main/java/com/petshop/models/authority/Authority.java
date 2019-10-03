@@ -1,9 +1,10 @@
-package com.petshop.models;
+package com.petshop.models.authority;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -11,6 +12,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.petshop.models.Vet;
 
 @Entity
 public class Authority implements Serializable {
@@ -21,16 +25,18 @@ public class Authority implements Serializable {
 	private Long id;
 
 	@Enumerated(EnumType.STRING)
-	private Roles roles;
+	@Column(unique = true)
+	private Role role;
 
-	@ManyToMany(mappedBy = "roles")
+	@ManyToMany(mappedBy = "role")
+	@JsonIgnore
 	private Set<Vet> vets = new HashSet<>();
 
 	public Authority() {
 	}
 
-	public Authority(Roles roles) {
-		this.roles = roles;
+	public Authority(Role roles) {
+		this.role = roles;
 	}
 
 	public Long getId() {
@@ -49,12 +55,12 @@ public class Authority implements Serializable {
 		this.vets = vets;
 	}
 
-	public Roles getRole() {
-		return roles;
+	public Role getRole() {
+		return role;
 	}
 
-	public void setRoles(Roles roles) {
-		this.roles = roles;
+	public void setRoles(Role roles) {
+		this.role = roles;
 	}
 
 }
