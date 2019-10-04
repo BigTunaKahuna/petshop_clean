@@ -1,12 +1,7 @@
 package com.petshop.controller;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,16 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.petshop.dao.AuthorityDao;
 import com.petshop.dto.AuthorityDTO;
-import com.petshop.dto.VetDTO;
-import com.petshop.dto.VetWithRolesDTO;
-import com.petshop.exception.IdNotFoundException;
 import com.petshop.exception.RoleNotFoundException;
 import com.petshop.models.Vet;
 import com.petshop.models.authority.Authority;
 import com.petshop.models.authority.Role;
 import com.petshop.repository.RoleRepository;
 import com.petshop.repository.VetRepository;
-import com.petshop.service.VetService;
 import com.petshop.service.impl.AuthorityServiceImpl;
 
 @RestController
@@ -45,8 +36,6 @@ public class AuthorityController {
 	@Autowired
 	VetRepository vetRepository;
 
-	private static final Logger log = LoggerFactory.getLogger(AuthorityController.class);
-
 	@PostMapping("")
 	public ResponseEntity<AuthorityDTO> addRole(@RequestBody AuthorityDTO authorityDTO) {
 		return new ResponseEntity<>(authorityService.saveAuthority(authorityDTO), HttpStatus.CREATED);
@@ -55,11 +44,6 @@ public class AuthorityController {
 	@GetMapping("/all")
 	public ResponseEntity<List<AuthorityDTO>> getAllRoles() {
 		return new ResponseEntity<>(authorityService.getAllRoles(), HttpStatus.OK);
-	}
-
-	@GetMapping("/foo")
-	public void getSomething() {
-		var foo = roleRepository.findAll();
 	}
 
 	@GetMapping("/foo2")
@@ -78,9 +62,9 @@ public class AuthorityController {
 			@PathVariable(name = "newAuthority") Role newAuthority) {
 		try {
 			authorityService.changeRoleOfVet(vetId, oldAuthority, newAuthority);
-			return new ResponseEntity<>("Role was successfully changed", HttpStatus.CREATED);			
+			return new ResponseEntity<>("Role was successfully changed", HttpStatus.CREATED);
 		} catch (RoleNotFoundException e) {
-			return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
 

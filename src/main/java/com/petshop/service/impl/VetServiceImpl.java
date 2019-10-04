@@ -5,9 +5,13 @@ import com.petshop.dto.VetDTO;
 import com.petshop.dto.VetWithRolesDTO;
 import com.petshop.exception.EmailAlreadyExistsException;
 import com.petshop.exception.IdNotFoundException;
+import com.petshop.exception.RoleNotFoundException;
 import com.petshop.mapper.impl.VetMapper;
 import com.petshop.mapper.impl.VetWithRolesMapper;
 import com.petshop.models.Vet;
+import com.petshop.models.authority.Authority;
+import com.petshop.models.authority.Role;
+import com.petshop.repository.RoleRepository;
 import com.petshop.service.VetService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +28,8 @@ import java.util.concurrent.CompletableFuture;
 public class VetServiceImpl implements VetService {
 	@Autowired
 	private VetDao vetDao;
+	@Autowired
+	private RoleRepository roleRepository;
 	@Autowired
 	private VetMapper vetMapper;
 	@Autowired
@@ -62,9 +68,12 @@ public class VetServiceImpl implements VetService {
 			throw new EmailAlreadyExistsException();
 		}
 		Vet vet = vetMapper.mapDtoToEntity(vetDTO);
-		vet.setPassword(bcrypt.encode(vetDTO.getPassword()));
-
-		return vetMapper.mapEntityToDto(vetDao.saveVet(vet));
+		Authority auth = roleRepository.findByRole(Role.ADMIN);
+		if (auth != null) {
+			vet.setPassword(bcrypt.encode(vetDTO.getPassword()));
+			vet.addRole(auth);
+			return vetMapper.mapEntityToDto(vetDao.saveVet(vet));
+		} else throw new RoleNotFoundException();
 	}
 
 	@Override

@@ -1,15 +1,12 @@
 package com.petshop.dao.impl;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.petshop.dao.VetDao;
 import com.petshop.exception.IdNotFoundException;
 import com.petshop.models.Vet;
-import com.petshop.models.authority.Authority;
-import com.petshop.repository.RoleRepository;
 import com.petshop.repository.VetRepository;
 
 @Repository
@@ -17,8 +14,6 @@ public class VetDaoImpl implements VetDao {
 
 	@Autowired
 	private VetRepository vetRepository;
-	@Autowired
-	private RoleRepository roleRepository;
 
 	@Override
 	public Vet getVetById(Long id) {
@@ -32,12 +27,11 @@ public class VetDaoImpl implements VetDao {
 
 	@Override
 	public Vet saveVet(Vet vet) {
-//		List<Authority> auth = roleRepository.findAll();
-//		for (Authority authority : auth) {
-//			vet.addRole(authority);
-//		}
-		addRoles(vet.getRoles());
 		return vetRepository.save(vet);
+	}
+	
+	public void saveVetAndFlush(Vet vet) {
+		vetRepository.saveAndFlush(vet);
 	}
 
 	@Override
@@ -71,12 +65,4 @@ public class VetDaoImpl implements VetDao {
 
 		return exists;
 	}
-
-	public void addRoles(Set<Authority> obj) {
-		List<Authority> auth = roleRepository.findAll();
-		for (Authority authority : auth) {
-			obj.add(authority);
-		}
-	}
-
 }

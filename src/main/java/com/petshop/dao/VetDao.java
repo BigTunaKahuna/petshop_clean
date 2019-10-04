@@ -11,6 +11,8 @@ public interface VetDao {
 	List<Vet> getAllVets();
 
 	Vet saveVet(Vet vet);
+	
+	void saveVetAndFlush(Vet vet); 
 
 	Vet updateVet(Long id, Vet vet);
 
