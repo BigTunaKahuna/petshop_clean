@@ -29,9 +29,30 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
 		return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
 	}
-	
+
 	@ExceptionHandler(EmailAlreadyExistsException.class)
-	public ResponseEntity<CustomErrorResponse> customHandleNotFound(EmailAlreadyExistsException ex, WebRequest request) {
+	public ResponseEntity<CustomErrorResponse> customHandleNotFound(EmailAlreadyExistsException ex,
+			WebRequest request) {
+		CustomErrorResponse errors = new CustomErrorResponse();
+		errors.setTimeStamp(LocalDateTime.now());
+		errors.setError(ex.getMessage());
+		errors.setStatus(HttpStatus.CONFLICT.value());
+
+		return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
+	}
+
+	@ExceptionHandler(RoleNotFoundException.class)
+	public ResponseEntity<CustomErrorResponse> customHandleNotFound(RoleNotFoundException ex, WebRequest request) {
+		CustomErrorResponse errors = new CustomErrorResponse();
+		errors.setTimeStamp(LocalDateTime.now());
+		errors.setError(ex.getMessage());
+		errors.setStatus(HttpStatus.NOT_FOUND.value());
+
+		return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(RoleAlreadyExists.class)
+	public ResponseEntity<CustomErrorResponse> customHandleAlreadyExists(RoleAlreadyExists ex, WebRequest request) {
 		CustomErrorResponse errors = new CustomErrorResponse();
 		errors.setTimeStamp(LocalDateTime.now());
 		errors.setError(ex.getMessage());

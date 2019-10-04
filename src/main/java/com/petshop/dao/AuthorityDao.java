@@ -12,4 +12,5 @@ public interface AuthorityDao {
 	Authority findByRole(Role role);
 
 	List<Authority> getAllRoles();
+
 }

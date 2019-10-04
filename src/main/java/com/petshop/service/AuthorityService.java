@@ -12,4 +12,6 @@ public interface AuthorityService {
 	List<AuthorityDTO> getAllRoles();
 
 	void changeRoleOfVet(Long vetId, Role oldAuthority, Role newAuthority);
+	
+	void deleteRoleForVet(Long vetId, Role role);
 }

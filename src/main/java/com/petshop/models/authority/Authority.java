@@ -12,8 +12,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.petshop.exception.annotation.StringEnumeration;
 import com.petshop.models.Vet;
 
 @Entity
@@ -26,6 +30,7 @@ public class Authority implements Serializable {
 
 	@Enumerated(EnumType.STRING)
 	@Column(unique = true)
+	@Enumeration(enumClass = Role.class)
 	private Role role;
 
 	@ManyToMany(mappedBy = "role")
