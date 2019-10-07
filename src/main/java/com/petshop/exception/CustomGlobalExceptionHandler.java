@@ -51,8 +51,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 		return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
 	}
 
-	@ExceptionHandler(RoleAlreadyExists.class)
-	public ResponseEntity<CustomErrorResponse> customHandleAlreadyExists(RoleAlreadyExists ex, WebRequest request) {
+	@ExceptionHandler(RoleAlreadyExistsException.class)
+	public ResponseEntity<CustomErrorResponse> customHandleAlreadyExists(RoleAlreadyExistsException ex, WebRequest request) {
 		CustomErrorResponse errors = new CustomErrorResponse();
 		errors.setTimeStamp(LocalDateTime.now());
 		errors.setError(ex.getMessage());

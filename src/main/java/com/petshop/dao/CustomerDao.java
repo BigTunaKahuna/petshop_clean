@@ -19,4 +19,6 @@ public interface CustomerDao {
 	void deleteCustomerById(Long id);
 
 	Boolean checkEmail(String email);
+	
+	Customer findByEmail(String email);
 }

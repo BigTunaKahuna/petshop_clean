@@ -19,6 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	UserDetailsService userDetailsService;
+	
 
 	@Bean
 	protected AuthenticationProvider authProvider() {
@@ -34,6 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 			.antMatchers(HttpMethod.GET, "/vet/**").hasAuthority("ADMIN")
+			.antMatchers(HttpMethod.GET,"/customer/**").hasAuthority("USER")
 			.antMatchers(HttpMethod.POST, "/vet").permitAll()
 			.and()
 			.formLogin()

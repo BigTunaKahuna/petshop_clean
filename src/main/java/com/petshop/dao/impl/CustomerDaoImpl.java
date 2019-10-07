@@ -97,5 +97,10 @@ public class CustomerDaoImpl implements CustomerDao {
 
 		return exists;
 	}
+	
+	@Override
+	public Customer findByEmail(String email) {
+		return customerRepository.findByEmail(email);
+	}
 
 }

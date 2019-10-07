@@ -12,12 +12,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.petshop.exception.annotation.StringEnumeration;
+import com.petshop.models.Customer;
 import com.petshop.models.Vet;
 
 @Entity
@@ -30,12 +28,16 @@ public class Authority implements Serializable {
 
 	@Enumerated(EnumType.STRING)
 	@Column(unique = true)
-	@Enumeration(enumClass = Role.class)
+	@NotNull(message = "Invalid role request")
 	private Role role;
 
 	@ManyToMany(mappedBy = "role")
 	@JsonIgnore
 	private Set<Vet> vets = new HashSet<>();
+
+	@ManyToMany(mappedBy = "role")
+	@JsonIgnore
+	private Set<Customer> customers = new HashSet<>();
 
 	public Authority() {
 	}
@@ -67,5 +69,15 @@ public class Authority implements Serializable {
 	public void setRoles(Role roles) {
 		this.role = roles;
 	}
+
+	public Set<Customer> getCustomers() {
+		return customers;
+	}
+
+	public void setCustomers(Set<Customer> customers) {
+		this.customers = customers;
+	}
+	
+	
 
 }

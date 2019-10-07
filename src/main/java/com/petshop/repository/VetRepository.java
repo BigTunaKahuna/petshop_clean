@@ -6,8 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.petshop.models.Vet;
 
 @Repository
-public interface VetRepository extends JpaRepository<Vet, Long>{
-
+public interface VetRepository extends JpaRepository<Vet, Long> {
 	Vet findByEmail(String email);
-
 }

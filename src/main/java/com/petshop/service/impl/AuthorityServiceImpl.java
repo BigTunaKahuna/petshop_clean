@@ -11,7 +11,7 @@ import com.petshop.dao.AuthorityDao;
 import com.petshop.dao.VetDao;
 import com.petshop.dto.AuthorityDTO;
 import com.petshop.dto.VetWithRolesDTO;
-import com.petshop.exception.RoleAlreadyExists;
+import com.petshop.exception.RoleAlreadyExistsException;
 import com.petshop.exception.RoleNotFoundException;
 import com.petshop.mapper.impl.AuthorityMapper;
 import com.petshop.mapper.impl.VetWithRolesMapper;
@@ -48,15 +48,15 @@ public class AuthorityServiceImpl implements AuthorityService {
 	public AuthorityDTO saveAuthority(AuthorityDTO authorityDTO) {
 		try {
 			Authority authority = authorityMapper.mapDtoToEntity(authorityDTO);
-			return authorityMapper.mapEntityToDto(authorityDao.saveAuthority(authority));			
+			return authorityMapper.mapEntityToDto(authorityDao.saveAuthority(authority));
 		} catch (DataIntegrityViolationException e) {
-			throw new RoleAlreadyExists();
+			throw new RoleAlreadyExistsException();
 		}
-		
+
 	}
 
 	// After the role has changed to ADMIN you need to delete cookies to don't get
-	// forbidden
+	// forbidden or to reset privileges
 	@Override
 	public void changeRoleOfVet(Long vetId, Role oldAuthority, Role newAuthority) {
 		VetWithRolesDTO vet = vetService.findVetById(vetId);

@@ -1,12 +1,16 @@
 package com.petshop.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.petshop.models.authority.Authority;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "CUSTOMER")
@@ -24,7 +28,6 @@ public class Customer implements Serializable {
 	private String email;
 
 	@NotEmpty(message = "Please enter a password")
-	@Size(min = 6, max = 20, message = "Password must be between 6 and 20 characters")
 	private String password;
 
 	@NotEmpty(message = "Please enter a phone number")
@@ -42,7 +45,29 @@ public class Customer implements Serializable {
 	@JoinColumn(name = "vet_id")
 	private Vet vet;
 
+	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.EAGER)
+	@JoinTable(name = "customer_role", joinColumns = @JoinColumn(name = "customer_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Authority> role = new HashSet<>();
+
 	public Customer() {
+	}
+
+	public Customer(Long id, @NotEmpty(message = "Please enter a name") String name,
+			@Email(message = "Email format is not valid") @NotEmpty(message = "Please enter an email") String email,
+			@NotEmpty(message = "Please enter a password") @Size(min = 6, max = 20, message = "Password must be between 6 and 20 characters") String password,
+			@NotEmpty(message = "Please enter a phone number") @Size(min = 10, max = 10, message = "Phone size must be 10") String phone,
+			@NotEmpty(message = "Please enter a pet species") String petSpecies,
+			@NotEmpty(message = "Please enter a pet name") String petName, Vet vet, Set<Authority> role) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.email = email;
+		this.password = password;
+		this.phone = phone;
+		this.petSpecies = petSpecies;
+		this.petName = petName;
+		this.vet = vet;
+		this.role = role;
 	}
 
 	public Customer(Long id, @NotEmpty String name, @NotEmpty String email, @NotEmpty String password,
@@ -132,6 +157,22 @@ public class Customer implements Serializable {
 
 	public void setVet(Vet vet) {
 		this.vet = vet;
+	}
+
+	public Set<Authority> getRole() {
+		return role;
+	}
+
+	public void setRole(Set<Authority> role) {
+		this.role = role;
+	}
+
+	public void addRole(Authority auth) {
+		role.add(auth);
+	}
+
+	public void removeRole(Authority auth) {
+		role.remove(auth);
 	}
 
 }

@@ -1,16 +1,14 @@
 package com.petshop.dto;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import com.petshop.exception.annotation.StringEnumeration;
 import com.petshop.models.authority.Role;
 
 public class AuthorityDTO {
 	private Long id;
 
-	@StringEnumeration(enumClass = Role.class)
+	@NotNull(message = "Invalid role request")
 	private Role role;
 
 	public AuthorityDTO() {

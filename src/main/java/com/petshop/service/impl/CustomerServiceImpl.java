@@ -4,11 +4,16 @@ import com.petshop.dao.CustomerDao;
 import com.petshop.dto.CustomerDTO;
 import com.petshop.exception.EmailAlreadyExistsException;
 import com.petshop.exception.IdNotFoundException;
+import com.petshop.exception.RoleNotFoundException;
 import com.petshop.mapper.impl.CustomerMapper;
 import com.petshop.models.Customer;
+import com.petshop.models.authority.Authority;
+import com.petshop.models.authority.Role;
+import com.petshop.repository.RoleRepository;
 import com.petshop.service.CustomerService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,9 +22,13 @@ import java.util.List;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 	@Autowired
+	private RoleRepository roleRepository;
+	@Autowired
 	private CustomerDao customerDao;
 	@Autowired
 	private CustomerMapper customerMapper;
+	@Autowired
+	private BCryptPasswordEncoder bcrypt;
 
 	@Override
 	public CustomerDTO getCustomerById(Long id) {
@@ -43,7 +52,12 @@ public class CustomerServiceImpl implements CustomerService {
 			throw new EmailAlreadyExistsException();
 		}
 		Customer customer = customerMapper.mapDtoToEntity(customerDTO);
-		return customerMapper.mapEntityToDto(customerDao.saveCustomer(vetId, customer));
+		Authority auth = roleRepository.findByRole(Role.USER);
+		if (auth != null) {
+			customer.setPassword(bcrypt.encode(customerDTO.getPassword()));
+			customer.addRole(auth);
+			return customerMapper.mapEntityToDto(customerDao.saveCustomer(vetId, customer));
+		} else throw new RoleNotFoundException();
 	}
 
 	@Override
