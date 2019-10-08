@@ -14,4 +14,8 @@ public interface AuthorityService {
 	void changeRoleOfVet(Long vetId, Role oldAuthority, Role newAuthority);
 	
 	void deleteRoleForVet(Long vetId, Role role);
+
+	void changeRoleOfCustomer(Long customerId, Role oldAuthority, Role newAuthority);
+
+	void deleteRoleForCustomer(Long customerId, Role role);
 }

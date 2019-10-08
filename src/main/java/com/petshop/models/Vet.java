@@ -69,27 +69,27 @@ public class Vet implements Serializable {
 		this.role = roles;
 	}
 
-	public Vet(Long id, @NotEmpty String name, @NotEmpty String password, @NotNull int age,
-			@NotNull double yearsOfExperience, @NotEmpty @Email String email, List<Customer> customers) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.password = password;
-		this.age = age;
-		this.yearsOfExperience = yearsOfExperience;
-		this.email = email;
-		this.customers = customers;
-	}
-
-	public Vet(@NotNull String name, @NotNull int age, @NotNull double yearsOfExperience, @NotNull @Email String email,
-			List<Customer> customers) {
-		super();
-		this.name = name;
-		this.age = age;
-		this.yearsOfExperience = yearsOfExperience;
-		this.email = email;
-		this.customers = customers;
-	}
+//	public Vet(Long id, @NotEmpty String name, @NotEmpty String password, @NotNull int age,
+//			@NotNull double yearsOfExperience, @NotEmpty @Email String email, List<Customer> customers) {
+//		super();
+//		this.id = id;
+//		this.name = name;
+//		this.password = password;
+//		this.age = age;
+//		this.yearsOfExperience = yearsOfExperience;
+//		this.email = email;
+//		this.customers = customers;
+//	}
+//
+//	public Vet(@NotNull String name, @NotNull int age, @NotNull double yearsOfExperience, @NotNull @Email String email,
+//			List<Customer> customers) {
+//		super();
+//		this.name = name;
+//		this.age = age;
+//		this.yearsOfExperience = yearsOfExperience;
+//		this.email = email;
+//		this.customers = customers;
+//	}
 
 	public Vet() {
 	}

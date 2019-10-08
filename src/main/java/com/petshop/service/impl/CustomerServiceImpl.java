@@ -2,10 +2,12 @@ package com.petshop.service.impl;
 
 import com.petshop.dao.CustomerDao;
 import com.petshop.dto.CustomerDTO;
+import com.petshop.dto.CustomerWithRolesDTO;
 import com.petshop.exception.EmailAlreadyExistsException;
 import com.petshop.exception.IdNotFoundException;
 import com.petshop.exception.RoleNotFoundException;
 import com.petshop.mapper.impl.CustomerMapper;
+import com.petshop.mapper.impl.CustomerWithRolesMapper;
 import com.petshop.models.Customer;
 import com.petshop.models.authority.Authority;
 import com.petshop.models.authority.Role;
@@ -29,11 +31,19 @@ public class CustomerServiceImpl implements CustomerService {
 	private CustomerMapper customerMapper;
 	@Autowired
 	private BCryptPasswordEncoder bcrypt;
+	@Autowired
+	private CustomerWithRolesMapper customerWithRolesMapper;
 
 	@Override
 	public CustomerDTO getCustomerById(Long id) {
 		Customer customer = customerDao.getCustomerById(id);
 		return customerMapper.mapEntityToDto(customer);
+	}
+
+	@Override
+	public CustomerWithRolesDTO getCustomerWithRolesById(Long id) {
+		Customer customer = customerDao.getCustomerById(id);
+		return customerWithRolesMapper.mapEntityToDto(customer);
 	}
 
 	@Override
@@ -57,7 +67,8 @@ public class CustomerServiceImpl implements CustomerService {
 			customer.setPassword(bcrypt.encode(customerDTO.getPassword()));
 			customer.addRole(auth);
 			return customerMapper.mapEntityToDto(customerDao.saveCustomer(vetId, customer));
-		} else throw new RoleNotFoundException();
+		} else
+			throw new RoleNotFoundException();
 	}
 
 	@Override

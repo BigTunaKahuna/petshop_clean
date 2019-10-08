@@ -10,6 +10,10 @@ public interface CustomerDao {
 
 	List<Customer> getAllCustomers();
 
+	Customer saveCustomer(Customer customer);
+
+	Customer saveCustomerAndFlush(Customer customer);
+
 	Customer saveCustomer(Long vetId, Customer customer);
 
 	Customer updateCustomer(Long vetId, Customer customer);
@@ -19,6 +23,6 @@ public interface CustomerDao {
 	void deleteCustomerById(Long id);
 
 	Boolean checkEmail(String email);
-	
+
 	Customer findByEmail(String email);
 }

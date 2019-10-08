@@ -1,4 +1,4 @@
-package com.petshop.models.authority;
+package com.petshop.models.authority.customer;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -7,30 +7,30 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.petshop.models.Vet;
+import com.petshop.models.Customer;
 
-public class VetPrincipal implements UserDetails {
+public class CustomerPrincipal implements UserDetails {
+	private static final long serialVersionUID = 6684327549214936190L;
+	private Customer customer;
 
-	private static final long serialVersionUID = -5338048780781990225L;
-	private Vet vet;
-
-	public VetPrincipal(Vet vet) {
-		this.vet = vet;
+	public CustomerPrincipal(Customer customer) {
+		this.customer = customer;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-	        return vet.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getRole().toString())).collect(Collectors.toList());
+		return customer.getRole().stream().map(role -> new SimpleGrantedAuthority(role.getRole().toString()))
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public String getPassword() {
-		return vet.getPassword();
+		return customer.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
-		return vet.getEmail();
+		return customer.getEmail();
 	}
 
 	@Override
@@ -51,15 +51,6 @@ public class VetPrincipal implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
-	}
-
-	public Vet getVetDetails() {
-		return vet;
-	}
-
-	@Override
-	public String toString() {
-		return "VetPrincipal [vet=" + vet + "]";
 	}
 
 }

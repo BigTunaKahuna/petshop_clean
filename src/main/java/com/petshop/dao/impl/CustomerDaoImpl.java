@@ -19,7 +19,7 @@ import com.petshop.repository.VetRepository;
 
 @Repository
 public class CustomerDaoImpl implements CustomerDao {
-	
+
 	@PersistenceContext
 	EntityManager em;
 
@@ -42,11 +42,21 @@ public class CustomerDaoImpl implements CustomerDao {
 	}
 
 	@Override
+	public Customer saveCustomer(Customer customer) {
+		return customerRepository.save(customer);
+	}
+
+	@Override
 	public Customer saveCustomer(Long vetId, Customer customer) {
 		Vet vet = vetRepository.findById(vetId).orElseThrow(IdNotFoundException::new);
 		vet.addCustomer(customer);
 		customer.setVet(vet);
 		return customerRepository.save(customer);
+	}
+
+	@Override
+	public Customer saveCustomerAndFlush(Customer customer) {
+		return customerRepository.saveAndFlush(customer);
 	}
 
 	@Override
@@ -86,7 +96,7 @@ public class CustomerDaoImpl implements CustomerDao {
 			throw new IdNotFoundException();
 		}
 	}
-	
+
 	@Override
 	public Boolean checkEmail(String email) {
 		Boolean exists = false;
@@ -97,7 +107,7 @@ public class CustomerDaoImpl implements CustomerDao {
 
 		return exists;
 	}
-	
+
 	@Override
 	public Customer findByEmail(String email) {
 		return customerRepository.findByEmail(email);

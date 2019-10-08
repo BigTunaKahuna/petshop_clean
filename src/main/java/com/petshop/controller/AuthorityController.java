@@ -46,11 +46,19 @@ public class AuthorityController {
 		return new ResponseEntity<>(authorityService.getAllRoles(), HttpStatus.OK);
 	}
 
-	@PutMapping("/change/{vetId}/{oldAuthority}/{newAuthority}")
-	public ResponseEntity<String> changeRole(@PathVariable(name = "vetId") Long vetId,
+	@PutMapping("/change/vet/{vetId}/{oldAuthority}/{newAuthority}")
+	public ResponseEntity<String> changeVetRole(@PathVariable(name = "vetId") Long vetId,
 			@PathVariable(name = "oldAuthority") Role oldAuthority,
 			@PathVariable(name = "newAuthority") Role newAuthority) {
 		authorityService.changeRoleOfVet(vetId, oldAuthority, newAuthority);
+		return new ResponseEntity<>("Role was successfully changed", HttpStatus.CREATED);
+	}
+
+	@PutMapping("/change/customer/{customerId}/{oldAuthority}/{newAuthority}")
+	public ResponseEntity<String> changeCustomerRole(@PathVariable(name = "customerId") Long customerId,
+			@PathVariable(name = "oldAuthority") Role oldAuthority,
+			@PathVariable(name = "newAuthority") Role newAuthority) {
+		authorityService.changeRoleOfCustomer(customerId, oldAuthority, newAuthority);
 		return new ResponseEntity<>("Role was successfully changed", HttpStatus.CREATED);
 	}
 

@@ -10,23 +10,40 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.petshop.models.authority.customer.CustomerDetailsService;
+import com.petshop.models.authority.vet.VetDetailsService;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+	VetDetailsService vetDetailsService;
+	CustomerDetailsService customerDetailsService;
+
 	@Autowired
-	UserDetailsService userDetailsService;
+	public WebSecurityConfig(VetDetailsService vetDetailsService, CustomerDetailsService customerDetailsService) {
+		this.vetDetailsService = vetDetailsService;
+		this.customerDetailsService = customerDetailsService;
+	}
 	
 
 	@Bean
-	protected AuthenticationProvider authProvider() {
+	protected AuthenticationProvider vetAuthProvider() {
 		final DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-		provider.setUserDetailsService(userDetailsService);
+		provider.setUserDetailsService(vetDetailsService);
 		provider.setPasswordEncoder(encoder());
 		return provider;
+	}
+	
+	@Bean
+	protected AuthenticationProvider customerAuthProvider() {
+		final DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+		provider.setUserDetailsService(customerDetailsService);
+		provider.setPasswordEncoder(encoder());
+		return provider;
+		
 	}
 
 	
@@ -49,7 +66,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) {
-		auth.authenticationProvider(authProvider());
+		auth.authenticationProvider(vetAuthProvider());
+		auth.authenticationProvider(customerAuthProvider());
 	}
 
 	@Bean

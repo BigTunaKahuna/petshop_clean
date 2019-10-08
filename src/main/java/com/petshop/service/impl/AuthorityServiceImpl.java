@@ -8,17 +8,23 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.petshop.dao.AuthorityDao;
+import com.petshop.dao.CustomerDao;
 import com.petshop.dao.VetDao;
 import com.petshop.dto.AuthorityDTO;
+import com.petshop.dto.CustomerWithRolesDTO;
 import com.petshop.dto.VetWithRolesDTO;
 import com.petshop.exception.RoleAlreadyExistsException;
 import com.petshop.exception.RoleNotFoundException;
 import com.petshop.mapper.impl.AuthorityMapper;
+import com.petshop.mapper.impl.CustomerWithRolesMapper;
 import com.petshop.mapper.impl.VetWithRolesMapper;
+import com.petshop.models.Customer;
 import com.petshop.models.Vet;
 import com.petshop.models.authority.Authority;
 import com.petshop.models.authority.Role;
+import com.petshop.repository.CustomerRepository;
 import com.petshop.service.AuthorityService;
+import com.petshop.service.CustomerService;
 import com.petshop.service.VetService;
 
 @Service
@@ -30,9 +36,17 @@ public class AuthorityServiceImpl implements AuthorityService {
 	@Autowired
 	private VetWithRolesMapper vetWithRolesMapper;
 	@Autowired
+	private CustomerWithRolesMapper customerWithRolesMapper;
+	@Autowired
 	private VetService vetService;
 	@Autowired
 	private VetDao vetDao;
+	@Autowired
+	private CustomerDao customerDao;
+	@Autowired
+	private CustomerService customerService;
+	@Autowired
+	private CustomerRepository customerRepository;
 
 	@Override
 	public List<AuthorityDTO> getAllRoles() {
@@ -72,6 +86,20 @@ public class AuthorityServiceImpl implements AuthorityService {
 	}
 
 	@Override
+	public void changeRoleOfCustomer(Long customerId, Role oldAuthority, Role newAuthority) {
+		CustomerWithRolesDTO customer = customerService.getCustomerWithRolesById(customerId);
+		Authority newAuth = authorityDao.findByRole(newAuthority);
+		if (newAuth != null) {
+			Authority oldAuth = customer.getRoles().stream().filter(role -> role.getRole().equals(oldAuthority))
+					.findAny().orElseThrow(RoleNotFoundException::new);
+			customer.removeRole(oldAuth);
+			customer.addRole(newAuth);
+			customerRepository.save(customerWithRolesMapper.mapDtoToEntity(customer));
+		} else
+			throw new RoleNotFoundException();
+	}
+
+	@Override
 	public void deleteRoleForVet(Long vetId, Role role) {
 		Authority auth = authorityDao.findByRole(role);
 		Vet vet = vetDao.getVetById(vetId);
@@ -81,4 +109,16 @@ public class AuthorityServiceImpl implements AuthorityService {
 		} else
 			throw new RoleNotFoundException();
 	}
+
+	@Override
+	public void deleteRoleForCustomer(Long customerId, Role role) {
+		Authority auth = authorityDao.findByRole(role);
+		Customer customer = customerDao.getCustomerById(customerId);
+		if (auth != null && customer.getRole().contains(auth)) {
+			customer.removeRole(auth);
+			customerDao.saveCustomer(customer);
+		} else
+			throw new RoleNotFoundException();
+	}
+
 }
