@@ -73,11 +73,13 @@ public class VetServiceImpl implements VetService {
 			vet.setPassword(bcrypt.encode(vetDTO.getPassword()));
 			vet.addRole(auth);
 			return vetMapper.mapEntityToDto(vetDao.saveVet(vet));
-		} else throw new RoleNotFoundException();
+		} else
+			throw new RoleNotFoundException();
 	}
 
 	@Override
 	public VetDTO updateVet(Long id, VetDTO vetDTO) {
+		vetDTO.setPassword(bcrypt.encode(vetDTO.getPassword()));
 		Vet vet = vetMapper.mapDtoToEntity(vetDTO);
 		return vetMapper.mapEntityToDto(vetDao.updateVet(id, vet));
 	}

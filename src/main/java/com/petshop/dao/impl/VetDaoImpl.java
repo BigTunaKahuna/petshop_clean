@@ -38,9 +38,10 @@ public class VetDaoImpl implements VetDao {
 	public Vet updateVet(Long id, Vet vet) {
 		return vetRepository.findById(id).map(vetReq -> {
 			vetReq.setName(vet.getName());
+			vetReq.setEmail(vet.getEmail());
+			vetReq.setPassword(vet.getPassword());
 			vetReq.setAge(vet.getAge());
 			vetReq.setYearsOfExperience(vet.getYearsOfExperience());
-			vetReq.setEmail(vet.getEmail());
 			return vetRepository.save(vetReq);
 		}).orElseThrow(IdNotFoundException::new);
 	}

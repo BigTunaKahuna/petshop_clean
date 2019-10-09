@@ -73,6 +73,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO) {
+		customerDTO.setPassword(bcrypt.encode(customerDTO.getPassword()));
 		Customer customer = customerMapper.mapDtoToEntity(customerDTO);
 		return customerMapper.mapEntityToDto(customerDao.updateCustomer(id, customer));
 	}

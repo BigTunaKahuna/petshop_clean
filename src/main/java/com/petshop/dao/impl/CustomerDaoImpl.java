@@ -63,6 +63,8 @@ public class CustomerDaoImpl implements CustomerDao {
 	public Customer updateCustomer(Long id, Customer customer) {
 		return customerRepository.findById(id).map(customerReq -> {
 			customerReq.setName(customer.getName());
+			customerReq.setEmail(customer.getEmail());
+			customerReq.setPassword(customer.getPassword());
 			customerReq.setPetName(customer.getPetName());
 			customerReq.setPetSpecies(customer.getPetSpecies());
 			customerReq.setPhone(customer.getPhone());
