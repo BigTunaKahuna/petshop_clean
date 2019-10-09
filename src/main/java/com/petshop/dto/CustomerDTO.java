@@ -15,7 +15,7 @@ public class CustomerDTO {
 	private String email;
 
 	@NotEmpty(message = "Please enter a password")
-	@Size(min = 6, max = 20, message = "Password must be between 6 and 20 characters")
+	@Size(min = 6, message = "Password must be at least 6 characters")
 	private String password;
 
 	@NotEmpty(message = "Please enter a phone number")

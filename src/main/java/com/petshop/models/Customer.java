@@ -70,30 +70,30 @@ public class Customer implements Serializable {
 		this.role = role;
 	}
 
-	public Customer(Long id, @NotEmpty String name, @NotEmpty String email, @NotEmpty String password,
-			@NotEmpty String phone, @NotEmpty String petSpecies, @NotEmpty String petName, Vet vet) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.email = email;
-		this.password = password;
-		this.phone = phone;
-		this.petSpecies = petSpecies;
-		this.petName = petName;
-		this.vet = vet;
-	}
-
-	public Customer(@NotEmpty String name, @NotEmpty String email, @NotEmpty String password, @NotEmpty String phone,
-			@NotEmpty String petSpecies, @NotEmpty String petName, Vet vet) {
-		super();
-		this.email = email;
-		this.password = password;
-		this.name = name;
-		this.phone = phone;
-		this.petSpecies = petSpecies;
-		this.petName = petName;
-		this.vet = vet;
-	}
+//	public Customer(Long id, @NotEmpty String name, @NotEmpty String email, @NotEmpty String password,
+//			@NotEmpty String phone, @NotEmpty String petSpecies, @NotEmpty String petName, Vet vet) {
+//		super();
+//		this.id = id;
+//		this.name = name;
+//		this.email = email;
+//		this.password = password;
+//		this.phone = phone;
+//		this.petSpecies = petSpecies;
+//		this.petName = petName;
+//		this.vet = vet;
+//	}
+//
+//	public Customer(@NotEmpty String name, @NotEmpty String email, @NotEmpty String password, @NotEmpty String phone,
+//			@NotEmpty String petSpecies, @NotEmpty String petName, Vet vet) {
+//		super();
+//		this.email = email;
+//		this.password = password;
+//		this.name = name;
+//		this.phone = phone;
+//		this.petSpecies = petSpecies;
+//		this.petName = petName;
+//		this.vet = vet;
+//	}
 
 	public Long getId() {
 		return id;
