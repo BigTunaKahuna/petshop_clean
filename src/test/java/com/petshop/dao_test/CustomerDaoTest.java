@@ -2,15 +2,14 @@ package com.petshop.dao_test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import java.util.ArrayList;
 import javax.transaction.Transactional;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
+
 import com.petshop.dao.CustomerDao;
 import com.petshop.dao.VetDao;
 import com.petshop.exception.IdNotFoundException;
@@ -207,7 +206,7 @@ public class CustomerDaoTest {
 		vet.setEmail("foo@gmail.com");
 		vet.setPassword("password");
 		vet.setAge(30);
-		vet.setYearsOfExperience(6D);		
+		vet.setYearsOfExperience(6D);
 		vetDao.saveVet(vet);
 
 		Customer customer = new Customer();
