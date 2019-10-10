@@ -9,15 +9,12 @@ import com.petshop.dao.AuthorityDao;
 import com.petshop.models.authority.Authority;
 import com.petshop.models.authority.Role;
 import com.petshop.repository.RoleRepository;
-import com.petshop.repository.VetRepository;
 
 @Repository
 public class AuthorityDaoImpl implements AuthorityDao {
 
 	@Autowired
 	RoleRepository rolesRepository;
-	@Autowired
-	VetRepository vetRepository;
 
 	@Override
 	public Authority saveAuthority(Authority authority) {
@@ -32,10 +29,5 @@ public class AuthorityDaoImpl implements AuthorityDao {
 	public Authority findByRole(Role role) {
 		return rolesRepository.findByRole(role);
 	}
-	
-//	@Override
-//	public void changeRoleOfVet(Long vetId, Role oldAuthority, Role newAuthority) {
-//		
-//	}
 
 }

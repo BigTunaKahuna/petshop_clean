@@ -22,7 +22,6 @@ import com.petshop.models.Customer;
 import com.petshop.models.Vet;
 import com.petshop.models.authority.Authority;
 import com.petshop.models.authority.Role;
-import com.petshop.repository.CustomerRepository;
 import com.petshop.service.AuthorityService;
 import com.petshop.service.CustomerService;
 import com.petshop.service.VetService;
@@ -45,8 +44,6 @@ public class AuthorityServiceImpl implements AuthorityService {
 	private CustomerDao customerDao;
 	@Autowired
 	private CustomerService customerService;
-	@Autowired
-	private CustomerRepository customerRepository;
 
 	@Override
 	public List<AuthorityDTO> getAllRoles() {

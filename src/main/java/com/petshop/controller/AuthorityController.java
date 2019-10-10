@@ -16,25 +16,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.petshop.dao.AuthorityDao;
 import com.petshop.dto.AuthorityDTO;
 import com.petshop.models.authority.Role;
-import com.petshop.repository.RoleRepository;
-import com.petshop.repository.VetRepository;
-import com.petshop.service.impl.AuthorityServiceImpl;
+import com.petshop.service.AuthorityService;
 
 @RestController
 @RequestMapping("/role")
 public class AuthorityController {
 
 	@Autowired
-	AuthorityServiceImpl authorityService;
-	@Autowired
-	AuthorityDao authorityDao;
-	@Autowired
-	RoleRepository roleRepository;
-	@Autowired
-	VetRepository vetRepository;
+	private AuthorityService authorityService;
 
 	@PostMapping("")
 	public ResponseEntity<AuthorityDTO> addRole(@Valid @RequestBody AuthorityDTO authorityDTO) {
