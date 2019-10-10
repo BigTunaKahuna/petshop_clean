@@ -25,7 +25,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,7 +38,7 @@ import com.petshop.dto.CustomerDTO;
 import com.petshop.exception.IdNotFoundException;
 import com.petshop.mapper.impl.CustomerMapper;
 import com.petshop.models.Customer;
-import com.petshop.service.impl.CustomerServiceImpl;
+import com.petshop.service.CustomerService;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -49,7 +48,7 @@ public class CustomerControllerTest {
 	@Autowired
 	private ObjectMapper mapper;
 	@MockBean
-	private CustomerServiceImpl customerService;
+	private CustomerService customerService;
 	@Autowired
 	private MockMvc mvc;
 	@Autowired
@@ -70,17 +69,14 @@ public class CustomerControllerTest {
 		customer.setPetName("Toby");
 
 		CustomerDTO customerDTO = customerMapper.mapEntityToDto(customer);
-		
+
 		given(customerService.getCustomerById(anyLong())).willReturn(customerDTO);
 		this.mvc.perform(get("/customer/1").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.id").value(1))
-				.andExpect(jsonPath("$.name").value("Rares"))
-				.andExpect(jsonPath("$.email").value("foo@gmail.com"))
+				.andExpect(status().isOk()).andExpect(jsonPath("$.id").value(1))
+				.andExpect(jsonPath("$.name").value("Rares")).andExpect(jsonPath("$.email").value("foo@gmail.com"))
 				.andExpect(jsonPath("$.password").value(customerDTO.getPassword()))
 				.andExpect(jsonPath("$.phone").value("1234567890"))
-				.andExpect(jsonPath("$.petSpecies").value("Labrador"))
-				.andExpect(jsonPath("$.petName").value("Toby"));
+				.andExpect(jsonPath("$.petSpecies").value("Labrador")).andExpect(jsonPath("$.petName").value("Toby"));
 	}
 
 	@Test
@@ -95,7 +91,7 @@ public class CustomerControllerTest {
 		customer1.setPhone("1234567890");
 		customer1.setPetSpecies("Labrador");
 		customer1.setPetName("Toby");
-		
+
 		Customer customer2 = new Customer();
 		customer2.setId(2L);
 		customer2.setName("Andrei");
@@ -115,8 +111,7 @@ public class CustomerControllerTest {
 				.andExpect(status().isOk())
 
 				// Checking the first CustomerJSON
-				.andExpect(jsonPath("$[0].id").value(1))
-				.andExpect(jsonPath("$[0].name").value("Rares"))
+				.andExpect(jsonPath("$[0].id").value(1)).andExpect(jsonPath("$[0].name").value("Rares"))
 				.andExpect(jsonPath("$[0].email").value("foo@gmail.com"))
 				.andExpect(jsonPath("$[0].password").value(customer1.getPassword()))
 				.andExpect(jsonPath("$[0].phone").value("1234567890"))
@@ -125,8 +120,7 @@ public class CustomerControllerTest {
 				.andExpect(jsonPath("$[0].vet").value(IsNull.nullValue()))
 
 				// Checking the second CustomerJSON
-				.andExpect(jsonPath("$[1].id").value(2))
-				.andExpect(jsonPath("$[1].name").value("Andrei"))
+				.andExpect(jsonPath("$[1].id").value(2)).andExpect(jsonPath("$[1].name").value("Andrei"))
 				.andExpect(jsonPath("$[1].email").value("foo2@gmail.com"))
 				.andExpect(jsonPath("$[1].password").value(customer2.getPassword()))
 				.andExpect(jsonPath("$[1].phone").value("1234567890"))
@@ -148,19 +142,16 @@ public class CustomerControllerTest {
 		customer.setPetName("Toby");
 
 		CustomerDTO customerDTO = customerMapper.mapEntityToDto(customer);
-		
+
 		given(customerService.saveCustomer(anyLong(), any(CustomerDTO.class))).willReturn(customerDTO);
 
 		this.mvc.perform(post("/customer/vet/1").content(mapper.writeValueAsString(customerDTO))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.id").value(1))
-				.andExpect(jsonPath("$.name").value("Rares"))
-				.andExpect(jsonPath("$.email").value("foo@gmail.com"))
+				.andExpect(status().isCreated()).andExpect(jsonPath("$.id").value(1))
+				.andExpect(jsonPath("$.name").value("Rares")).andExpect(jsonPath("$.email").value("foo@gmail.com"))
 				.andExpect(jsonPath("$.password").value(customerDTO.getPassword()))
 				.andExpect(jsonPath("$.phone").value("1234567890"))
-				.andExpect(jsonPath("$.petSpecies").value("Labrador"))
-				.andExpect(jsonPath("$.petName").value("Toby"));
+				.andExpect(jsonPath("$.petSpecies").value("Labrador")).andExpect(jsonPath("$.petName").value("Toby"));
 	}
 
 	@Test
@@ -176,7 +167,6 @@ public class CustomerControllerTest {
 		customer.setPetName("Toby");
 
 		CustomerDTO customerDTO = customerMapper.mapEntityToDto(customer);
-		
 
 		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customerDTO))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
@@ -196,7 +186,6 @@ public class CustomerControllerTest {
 		customer.setPetName("Toby");
 
 		CustomerDTO customerDTO = customerMapper.mapEntityToDto(customer);
-
 
 		this.mvc.perform(put("/customer/1/1").content(mapper.writeValueAsString(customerDTO))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
@@ -234,7 +223,7 @@ public class CustomerControllerTest {
 				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value("400"))
 				.andExpect(jsonPath("$.errors[0]").value("Please enter a name"));
 	}
-	
+
 	@Test
 	public void testMissingEmail() throws JsonProcessingException, Exception {
 		CustomerDTO customerDTO = new CustomerDTO();
@@ -298,9 +287,9 @@ public class CustomerControllerTest {
 				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value("400"))
 				.andExpect(jsonPath("$.errors[0]").value("Please enter a pet name"));
 	}
-	
+
 	@Test
-	public void testMissingPassword() throws  Exception {
+	public void testMissingPassword() throws Exception {
 		CustomerDTO customerDTO = new CustomerDTO();
 		customerDTO.setId(1L);
 		customerDTO.setName("Rares");
@@ -308,15 +297,15 @@ public class CustomerControllerTest {
 		customerDTO.setPhone("1234567890");
 		customerDTO.setPetSpecies("Labrador");
 		customerDTO.setPetName("Toby");
-		
+
 		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customerDTO))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value("400"))
 				.andExpect(jsonPath("$.errors[0]").value("Please enter a password"));
 	}
-	
+
 	@Test
-	public void testPasswordTooShort() throws  Exception {
+	public void testPasswordTooShort() throws Exception {
 		CustomerDTO customerDTO = new CustomerDTO();
 		customerDTO.setId(1L);
 		customerDTO.setName("Rares");
@@ -325,9 +314,9 @@ public class CustomerControllerTest {
 		customerDTO.setPhone("1234567890");
 		customerDTO.setPetSpecies("Labrador");
 		customerDTO.setPetName("Toby");
-		
+
 		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customerDTO))
-				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print())
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value("400"))
 				.andExpect(jsonPath("$.errors[0]").value("Password must be at least 6 characters"));
 	}
