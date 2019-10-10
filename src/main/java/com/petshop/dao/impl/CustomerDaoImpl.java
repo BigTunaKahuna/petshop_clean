@@ -55,8 +55,8 @@ public class CustomerDaoImpl implements CustomerDao {
 	}
 
 	@Override
-	public Customer saveCustomerAndFlush(Customer customer) {
-		return customerRepository.saveAndFlush(customer);
+	public void saveCustomerAndFlush(Customer customer) {
+		customerRepository.saveAndFlush(customer);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.petshop.dto;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.constraints.Email;
@@ -35,7 +36,7 @@ public class VetWithRolesDTO {
 	@Email(message = "Email format is not valid")
 	@NotEmpty(message = "Please enter an email")
 	private String email;
-	private Set<Authority> roles;
+	private Set<Authority> roles = new HashSet<>();
 
 	public VetWithRolesDTO() {
 	}

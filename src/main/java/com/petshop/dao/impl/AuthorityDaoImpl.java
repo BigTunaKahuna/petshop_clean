@@ -32,5 +32,10 @@ public class AuthorityDaoImpl implements AuthorityDao {
 	public Authority findByRole(Role role) {
 		return rolesRepository.findByRole(role);
 	}
+	
+//	@Override
+//	public void changeRoleOfVet(Long vetId, Role oldAuthority, Role newAuthority) {
+//		
+//	}
 
 }

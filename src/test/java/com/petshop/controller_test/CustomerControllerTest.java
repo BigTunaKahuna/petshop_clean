@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -299,7 +300,7 @@ public class CustomerControllerTest {
 	}
 	
 	@Test
-	private void testMissingPassword() throws  Exception {
+	public void testMissingPassword() throws  Exception {
 		CustomerDTO customerDTO = new CustomerDTO();
 		customerDTO.setId(1L);
 		customerDTO.setName("Rares");
@@ -315,18 +316,18 @@ public class CustomerControllerTest {
 	}
 	
 	@Test
-	private void testPasswordTooShort() throws  Exception {
+	public void testPasswordTooShort() throws  Exception {
 		CustomerDTO customerDTO = new CustomerDTO();
 		customerDTO.setId(1L);
 		customerDTO.setName("Rares");
 		customerDTO.setEmail("foo@gmail.com");
-		customerDTO.setPassword("password");
+		customerDTO.setPassword("");
 		customerDTO.setPhone("1234567890");
 		customerDTO.setPetSpecies("Labrador");
 		customerDTO.setPetName("Toby");
 		
 		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customerDTO))
-				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andDo(print())
 				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value("400"))
 				.andExpect(jsonPath("$.errors[0]").value("Password must be at least 6 characters"));
 	}

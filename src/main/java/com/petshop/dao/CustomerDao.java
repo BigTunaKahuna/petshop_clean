@@ -12,7 +12,7 @@ public interface CustomerDao {
 
 	Customer saveCustomer(Customer customer);
 
-	Customer saveCustomerAndFlush(Customer customer);
+	void saveCustomerAndFlush(Customer customer);
 
 	Customer saveCustomer(Long vetId, Customer customer);
 

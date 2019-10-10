@@ -1,5 +1,6 @@
 package com.petshop.dto;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.GeneratedValue;
@@ -36,7 +37,7 @@ public class CustomerWithRolesDTO {
 	@NotEmpty(message = "Please enter a pet name")
 	private String petName;
 
-	private Set<Authority> roles;
+	private Set<Authority> roles = new HashSet<>();
 
 	public CustomerWithRolesDTO() {
 	}

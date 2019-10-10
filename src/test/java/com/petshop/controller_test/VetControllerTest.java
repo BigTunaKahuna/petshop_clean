@@ -235,7 +235,7 @@ public class VetControllerTest {
 		this.mvc.perform(delete("/vet/1")).andExpect(status().isOk());
 
 		String content = this.mvc.perform(delete("/vet/1")).andReturn().getResponse().getContentAsString();
-		assertEquals(content, "The vet was deleted succesfully!");
+		assertEquals("The vet was deleted succesfully!", content);
 	}
 
 	@Test
@@ -246,7 +246,7 @@ public class VetControllerTest {
 	}
 	
 	@Test
-	private void testNoAuthority() throws Exception {
+	public void testNoAuthority() throws Exception {
 		Vet vet = new Vet();
 		vet.setId(1L);
 		vet.setName("Marius");

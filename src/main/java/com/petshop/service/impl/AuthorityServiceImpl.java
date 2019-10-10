@@ -94,7 +94,7 @@ public class AuthorityServiceImpl implements AuthorityService {
 					.findAny().orElseThrow(RoleNotFoundException::new);
 			customer.removeRole(oldAuth);
 			customer.addRole(newAuth);
-			customerRepository.save(customerWithRolesMapper.mapDtoToEntity(customer));
+			customerDao.saveCustomerAndFlush(customerWithRolesMapper.mapDtoToEntity(customer));
 		} else
 			throw new RoleNotFoundException();
 	}
@@ -116,7 +116,7 @@ public class AuthorityServiceImpl implements AuthorityService {
 		Customer customer = customerDao.getCustomerById(customerId);
 		if (auth != null && customer.getRole().contains(auth)) {
 			customer.removeRole(auth);
-			customerDao.saveCustomer(customer);
+			customerDao.saveCustomerAndFlush(customer);
 		} else
 			throw new RoleNotFoundException();
 	}
