@@ -28,6 +28,7 @@ public class Customer implements Serializable {
 	private String email;
 
 	@NotEmpty(message = "Please enter a password")
+	@Size(min = 6, message = "Password must be at least 6 characters")
 	private String password;
 
 	@NotEmpty(message = "Please enter a phone number")
