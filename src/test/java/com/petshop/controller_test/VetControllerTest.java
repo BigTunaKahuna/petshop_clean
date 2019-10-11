@@ -129,6 +129,7 @@ public class VetControllerTest {
 				.andExpect(jsonPath("$.customers[0].phone").value("1234567890"))
 				.andExpect(jsonPath("$.customers[0].petSpecies").value("Labrador"))
 				.andExpect(jsonPath("$.customers[0].petName").value("Toby"));
+		verify(vetService).getVetById(anyLong());
 	}
 
 	@Test
@@ -176,6 +177,7 @@ public class VetControllerTest {
 				.andExpect(jsonPath("$[1].password").value(vet2.getPassword()))
 				.andExpect(jsonPath("$[1].age").value(40))
 				.andExpect(jsonPath("$[1].yearsOfExperience").value(13));
+		verify(vetService).getAllVets();
 	}
 
 	@Test
@@ -202,6 +204,7 @@ public class VetControllerTest {
 				.andExpect(jsonPath("$.password").value(vet.getPassword()))
 				.andExpect(jsonPath("$.age").value(30))
 				.andExpect(jsonPath("$.yearsOfExperience").value(6));
+		verify(vetService).saveVet(any(VetDTO.class));
 	}
 
 	@Test
@@ -228,6 +231,7 @@ public class VetControllerTest {
 				.andExpect(jsonPath("$.password").value(vet.getPassword()))
 				.andExpect(jsonPath("$.age").value(30))
 				.andExpect(jsonPath("$.yearsOfExperience").value(6));
+		verify(vetService).updateVet(anyLong(), any(VetDTO.class));
 	}
 
 	@Test
@@ -236,6 +240,7 @@ public class VetControllerTest {
 
 		String content = this.mvc.perform(delete("/vet/1")).andReturn().getResponse().getContentAsString();
 		assertEquals("The vet was deleted succesfully!", content);
+		verify(vetService,times(2)).deleteVetById(anyLong());
 	}
 
 	@Test

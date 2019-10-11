@@ -3,12 +3,10 @@ package com.petshop.controller_test;
 import org.hamcrest.core.IsNull;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -41,7 +39,6 @@ import com.petshop.models.Customer;
 import com.petshop.service.CustomerService;
 
 @SpringBootTest
-@ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc
 public class CustomerControllerTest {
 
@@ -77,6 +74,7 @@ public class CustomerControllerTest {
 				.andExpect(jsonPath("$.password").value(customerDTO.getPassword()))
 				.andExpect(jsonPath("$.phone").value("1234567890"))
 				.andExpect(jsonPath("$.petSpecies").value("Labrador")).andExpect(jsonPath("$.petName").value("Toby"));
+		verify(customerService).getCustomerById(anyLong());
 	}
 
 	@Test
@@ -127,6 +125,7 @@ public class CustomerControllerTest {
 				.andExpect(jsonPath("$[1].petSpecies").value("Labrador2"))
 				.andExpect(jsonPath("$[1].petName").value("Toby2"))
 				.andExpect(jsonPath("$[1].vet").value(IsNull.nullValue()));
+		verify(customerService).getAllCustomers();
 	}
 
 	@Test
@@ -152,6 +151,7 @@ public class CustomerControllerTest {
 				.andExpect(jsonPath("$.password").value(customerDTO.getPassword()))
 				.andExpect(jsonPath("$.phone").value("1234567890"))
 				.andExpect(jsonPath("$.petSpecies").value("Labrador")).andExpect(jsonPath("$.petName").value("Toby"));
+		verify(customerService).saveCustomer(anyLong(), any(CustomerDTO.class));
 	}
 
 	@Test
@@ -168,9 +168,13 @@ public class CustomerControllerTest {
 
 		CustomerDTO customerDTO = customerMapper.mapEntityToDto(customer);
 
+		
+		given(customerService.updateCustomer(anyLong(), any(CustomerDTO.class))).willReturn(customerDTO);
+
 		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customerDTO))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated());
+		verify(customerService).updateCustomer(anyLong(), any(CustomerDTO.class));
 	}
 
 	@Test
@@ -190,6 +194,7 @@ public class CustomerControllerTest {
 		this.mvc.perform(put("/customer/1/1").content(mapper.writeValueAsString(customerDTO))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated());
+		verify(customerService).updateVetForCustomer(anyLong(), anyLong(), any(CustomerDTO.class));
 	}
 
 	@Test
@@ -198,7 +203,8 @@ public class CustomerControllerTest {
 		this.mvc.perform(delete("/customer/1")).andExpect(status().isOk());
 
 		String content = this.mvc.perform(delete("/customer/1")).andReturn().getResponse().getContentAsString();
-		assertEquals(content, "The customer was deleted succesfully!");
+		assertEquals("The customer was deleted succesfully!", content);
+		verify(customerService,times(2)).deleteCustomerById(anyLong());
 	}
 
 	@Test
@@ -310,7 +316,7 @@ public class CustomerControllerTest {
 		customerDTO.setId(1L);
 		customerDTO.setName("Rares");
 		customerDTO.setEmail("foo@gmail.com");
-		customerDTO.setPassword("");
+		customerDTO.setPassword("12345");
 		customerDTO.setPhone("1234567890");
 		customerDTO.setPetSpecies("Labrador");
 		customerDTO.setPetName("Toby");
