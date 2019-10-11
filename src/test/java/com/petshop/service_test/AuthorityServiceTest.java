@@ -25,6 +25,7 @@ import com.petshop.dao.VetDao;
 import com.petshop.dto.AuthorityDTO;
 import com.petshop.dto.CustomerWithRolesDTO;
 import com.petshop.dto.VetWithRolesDTO;
+import com.petshop.exception.RoleAlreadyExistsException;
 import com.petshop.exception.RoleNotFoundException;
 import com.petshop.mapper.impl.AuthorityMapper;
 import com.petshop.models.Customer;
@@ -88,6 +89,63 @@ public class AuthorityServiceTest {
 	}
 
 	@Test
+	public void testAddRoleForVet() throws Exception {
+		Authority auth = new Authority(Role.ADMIN);
+		VetWithRolesDTO vet = new VetWithRolesDTO();
+		vet.setId(1L);
+		vet.setName("Marius");
+		vet.setEmail("foo@gmail.com");
+		vet.setPassword(bcrypt.encode("password"));
+		vet.setAge(30);
+		vet.setYearsOfExperience(6D);
+
+		when(authorityDao.findByRole(any(Role.class))).thenReturn(auth);
+		when(vetService.findVetById(anyLong())).thenReturn(vet);
+		doNothing().when(vetDao).saveVetAndFlush(any(Vet.class));
+
+		authorityService.addRoleForVet(anyLong(), Role.ADMIN);
+
+		verify(vetService).findVetById(anyLong());
+		verify(authorityDao).findByRole(Role.ADMIN);
+		verify(vetDao).saveVetAndFlush(any(Vet.class));
+
+		assertEquals(Role.ADMIN, vet.getRoles().stream().map(x -> {
+			if (x.getRole().equals(Role.ADMIN))
+				return Role.ADMIN;
+			throw new RoleNotFoundException();
+		}).findAny().get());
+	}
+
+	@Test
+	public void testAddRoleForCustomer() throws Exception {
+		Authority auth = new Authority(Role.USER);
+		CustomerWithRolesDTO customer = new CustomerWithRolesDTO();
+		customer.setId(1L);
+		customer.setName("Rares");
+		customer.setEmail("foo@gmail.com");
+		customer.setPassword("password");
+		customer.setPhone("1234567890");
+		customer.setPetSpecies("Labrador");
+		customer.setPetName("Toby");
+
+		when(authorityDao.findByRole(any(Role.class))).thenReturn(auth);
+		when(customerService.getCustomerWithRolesById(anyLong())).thenReturn(customer);
+		doNothing().when(customerDao).saveCustomerAndFlush(any(Customer.class));
+
+		authorityService.addRoleForCustomer(anyLong(), Role.USER);
+
+		verify(customerService).getCustomerWithRolesById(anyLong());
+		verify(authorityDao).findByRole(Role.USER);
+		verify(customerDao).saveCustomerAndFlush(any(Customer.class));
+
+		assertEquals(Role.USER, customer.getRoles().stream().map(x -> {
+			if (x.getRole().equals(Role.USER))
+				return Role.USER;
+			throw new RoleNotFoundException();
+		}).findAny().get());
+	}
+
+	@Test
 	public void testChangeRoleOfVet() throws Exception {
 		Authority oldAuth = new Authority(Role.ADMIN);
 		Authority newAuth = new Authority(Role.USER);
@@ -103,6 +161,7 @@ public class AuthorityServiceTest {
 		when(vetService.findVetById(anyLong())).thenReturn(vet);
 		when(authorityDao.findByRole(any(Role.class))).thenReturn(newAuth);
 		doNothing().when(vetDao).saveVetAndFlush(any(Vet.class));
+
 		authorityService.changeRoleOfVet(vet.getId(), Role.ADMIN, Role.USER);
 
 		verify(vetService).findVetById(anyLong());
@@ -197,6 +256,103 @@ public class AuthorityServiceTest {
 		verify(customerDao).getCustomerById(anyLong());
 		verify(customerDao).saveCustomerAndFlush(any(Customer.class));
 		assertEquals(customer.getRole(), emptyAuth);
+	}
+
+	@Test
+	public void testSaveAuthorityError() throws Exception {
+		Authority authority = new Authority(Role.ADMIN);
+		AuthorityDTO authorityHolderDTO = authorityMapper.mapEntityToDto(authority);
+
+		when(authorityDao.saveAuthority(any(Authority.class))).thenThrow(RoleAlreadyExistsException.class);
+
+		assertThrows(RoleAlreadyExistsException.class, () -> authorityService.saveAuthority(authorityHolderDTO));
+	}
+
+	@Test
+	public void testAddRoleForVetNullError() throws Exception {
+		VetWithRolesDTO vet = new VetWithRolesDTO();
+		vet.setId(1L);
+		vet.setName("Marius");
+		vet.setEmail("foo@gmail.com");
+		vet.setPassword(bcrypt.encode("password"));
+		vet.setAge(30);
+		vet.setYearsOfExperience(6D);
+
+		when(vetService.findVetById(anyLong())).thenReturn(vet);
+		when(authorityDao.findByRole(any(Role.class))).thenReturn(null);
+
+		assertThrows(RoleNotFoundException.class, () -> authorityService.addRoleForVet(vet.getId(), Role.ADMIN));
+	}
+
+	@Test
+	public void testAddRoleForVetRoleAlreadyExistsError() throws Exception {
+		Authority auth1 = new Authority(Role.ADMIN);
+		Authority auth2 = new Authority(Role.ADMIN);
+
+		VetWithRolesDTO vet = new VetWithRolesDTO();
+		vet.setId(1L);
+		vet.setName("Marius");
+		vet.setEmail("foo@gmail.com");
+		vet.setPassword(bcrypt.encode("password"));
+		vet.setAge(30);
+		vet.setYearsOfExperience(6D);
+		vet.addRole(auth1);
+
+		when(vetService.findVetById(anyLong())).thenReturn(vet);
+		when(authorityDao.findByRole(any(Role.class))).thenReturn(auth2);
+
+		VetWithRolesDTO vetRequest = vetService.findVetById(anyLong());
+		Authority authority = authorityDao.findByRole(any(Role.class));
+
+		if (vetRequest.getRoles().contains(authority)) {
+			assertThrows(RoleNotFoundException.class, () -> authorityService.addRoleForVet(vet.getId(), Role.ADMIN));
+		}
+	}
+
+	@Test
+	public void testAddRoleForCustomerNullError() throws Exception {
+		CustomerWithRolesDTO customer = new CustomerWithRolesDTO();
+		customer.setId(1L);
+		customer.setName("Rares");
+		customer.setEmail("foo@gmail.com");
+		customer.setPassword("password");
+		customer.setPhone("1234567890");
+		customer.setPetSpecies("Labrador");
+		customer.setPetName("Toby");
+
+		when(customerService.getCustomerWithRolesById(anyLong())).thenReturn(customer);
+		when(authorityDao.findByRole(any(Role.class))).thenReturn(null);
+		doNothing().when(customerDao).saveCustomerAndFlush(any(Customer.class));
+
+		assertThrows(RoleNotFoundException.class,
+				() -> authorityService.addRoleForCustomer(customer.getId(), Role.USER));
+	}
+
+	@Test
+	public void testAddRoleForCustomerRoleAlreadyExistsError() throws Exception {
+		Authority auth1 = new Authority(Role.USER);
+		Authority auth2 = new Authority(Role.USER);
+
+		CustomerWithRolesDTO customer = new CustomerWithRolesDTO();
+		customer.setId(1L);
+		customer.setName("Rares");
+		customer.setEmail("foo@gmail.com");
+		customer.setPassword("password");
+		customer.setPhone("1234567890");
+		customer.setPetSpecies("Labrador");
+		customer.setPetName("Toby");
+		customer.addRole(auth1);
+
+		when(customerService.getCustomerWithRolesById(anyLong())).thenReturn(customer);
+		when(authorityDao.findByRole(any(Role.class))).thenReturn(auth2);
+
+		CustomerWithRolesDTO customerRequest = customerService.getCustomerWithRolesById(anyLong());
+		Authority authority = authorityDao.findByRole(any(Role.class));
+		
+		if (customerRequest.getRoles().contains(authority)) {
+			assertThrows(RoleNotFoundException.class,
+					() -> authorityService.addRoleForCustomer(customer.getId(), Role.USER));
+		}
 	}
 
 	@Test
