@@ -66,6 +66,30 @@ public class AuthorityServiceImpl implements AuthorityService {
 
 	}
 
+	@Override
+	public void addRoleForVet(Long vetId, Role role) {
+		Authority auth = authorityDao.findByRole(role);
+		if (auth != null) {
+			VetWithRolesDTO vet = vetService.findVetById(vetId);
+			if (!vet.getRoles().contains(auth)) {
+				vet.addRole(auth);
+				vetDao.saveVetAndFlush(vetWithRolesMapper.mapDtoToEntity(vet));
+			}
+		} else throw new RoleNotFoundException();
+	}
+
+	@Override
+	public void addRoleForCustomer(Long customerId, Role role) {
+		Authority auth = authorityDao.findByRole(role);
+		if (auth != null) {
+			CustomerWithRolesDTO customer = customerService.getCustomerWithRolesById(customerId);
+			if (!customer.getRoles().contains(auth)) {
+				customer.addRole(auth);
+				customerDao.saveCustomerAndFlush(customerWithRolesMapper.mapDtoToEntity(customer));
+			}
+		} else throw new RoleNotFoundException();
+	}
+
 	// After the role has changed to ADMIN you need to delete cookies to don't get
 	// forbidden or to reset privileges
 	@Override
@@ -78,8 +102,7 @@ public class AuthorityServiceImpl implements AuthorityService {
 			vet.removeRole(oldAuth);
 			vet.addRole(newAuth);
 			vetDao.saveVetAndFlush(vetWithRolesMapper.mapDtoToEntity(vet));
-		} else
-			throw new RoleNotFoundException();
+		} else throw new RoleNotFoundException();
 	}
 
 	@Override
@@ -92,8 +115,7 @@ public class AuthorityServiceImpl implements AuthorityService {
 			customer.removeRole(oldAuth);
 			customer.addRole(newAuth);
 			customerDao.saveCustomerAndFlush(customerWithRolesMapper.mapDtoToEntity(customer));
-		} else
-			throw new RoleNotFoundException();
+		} else throw new RoleNotFoundException();
 	}
 
 	@Override
@@ -103,8 +125,7 @@ public class AuthorityServiceImpl implements AuthorityService {
 		if (auth != null && vet.getRoles().contains(auth)) {
 			vet.removeRole(auth);
 			vetDao.saveVetAndFlush(vet);
-		} else
-			throw new RoleNotFoundException();
+		} else throw new RoleNotFoundException();
 	}
 
 	@Override
@@ -114,8 +135,6 @@ public class AuthorityServiceImpl implements AuthorityService {
 		if (auth != null && customer.getRole().contains(auth)) {
 			customer.removeRole(auth);
 			customerDao.saveCustomerAndFlush(customer);
-		} else
-			throw new RoleNotFoundException();
+		} else throw new RoleNotFoundException();
 	}
-
 }
