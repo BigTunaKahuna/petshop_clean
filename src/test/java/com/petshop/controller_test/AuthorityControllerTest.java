@@ -42,21 +42,6 @@ public class AuthorityControllerTest {
 
 	@Test
 	@WithMockUser(authorities = "ADMIN")
-	public void testAddRole() throws Exception {
-		Authority authority = new Authority();
-		authority.setRoles(Role.ADMIN);
-		AuthorityDTO authorityDTO = authorityMapper.mapEntityToDto(authority);
-
-		given(authorityService.saveAuthority(any(AuthorityDTO.class))).willReturn(authorityDTO);
-
-		this.mvc.perform(post("/role").content(mapper.writeValueAsString(authorityDTO))
-				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isCreated()).andExpect(jsonPath("$.role").value("ADMIN"));
-		verify(authorityService).saveAuthority(any(AuthorityDTO.class));
-	}
-
-	@Test
-	@WithMockUser(authorities = "ADMIN")
 	public void testGetAllRoles() throws Exception {
 		Authority auth1 = new Authority();
 		auth1.setRoles(Role.USER);
@@ -77,6 +62,47 @@ public class AuthorityControllerTest {
 				.andExpect(status().isOk()).andExpect(jsonPath("$.[0].role").value("USER"))
 				.andExpect(jsonPath("$.[1].role").value("ADMIN"));
 		verify(authorityService).getAllRoles();
+	}
+
+	@Test
+	@WithMockUser(authorities = "ADMIN")
+	public void testAddRole() throws Exception {
+		Authority authority = new Authority();
+		authority.setRoles(Role.ADMIN);
+		AuthorityDTO authorityDTO = authorityMapper.mapEntityToDto(authority);
+
+		given(authorityService.saveAuthority(any(AuthorityDTO.class))).willReturn(authorityDTO);
+
+		this.mvc.perform(post("/role").content(mapper.writeValueAsString(authorityDTO))
+				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated()).andExpect(jsonPath("$.role").value("ADMIN"));
+		verify(authorityService).saveAuthority(any(AuthorityDTO.class));
+	}
+	
+	@Test
+	@WithMockUser(authorities = "ADMIN")
+	public void testAddRoleForVet() throws Exception {
+		String success = "Role was added successfully";
+	
+		doNothing().when(authorityService).addRoleForVet(anyLong(), any(Role.class));
+		
+		this.mvc.perform(post("/role/vet/1/USER").content(mapper.writeValueAsString(success)).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$").value(success));
+		verify(authorityService).addRoleForVet(anyLong(), any(Role.class));
+	}
+	
+	@Test
+	@WithMockUser(authorities = "ADMIN")
+	public void testAddRoleForCustomer() throws Exception {
+		String success = "Role was added successfully";
+	
+		doNothing().when(authorityService).addRoleForCustomer(anyLong(), any(Role.class));
+		
+		this.mvc.perform(post("/role/customer/1/USER").content(mapper.writeValueAsString(success)).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$").value(success));
+		verify(authorityService).addRoleForCustomer(anyLong(), any(Role.class));
 	}
 	
 	@Test

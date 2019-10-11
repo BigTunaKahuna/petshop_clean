@@ -2,6 +2,7 @@ package com.petshop.service_test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -20,13 +21,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.petshop.dao.AuthorityDao;
 import com.petshop.dao.CustomerDao;
 import com.petshop.dto.AuthorityDTO;
 import com.petshop.dto.CustomerDTO;
+import com.petshop.dto.CustomerWithRolesDTO;
+import com.petshop.exception.EmailAlreadyExistsException;
 import com.petshop.exception.IdNotFoundException;
+import com.petshop.exception.RoleNotFoundException;
 import com.petshop.mapper.impl.CustomerMapper;
+import com.petshop.mapper.impl.CustomerWithRolesMapper;
 import com.petshop.models.Customer;
 import com.petshop.models.Vet;
+import com.petshop.models.authority.Authority;
 import com.petshop.models.authority.Role;
 import com.petshop.service.AuthorityService;
 import com.petshop.service.CustomerService;
@@ -41,8 +48,8 @@ public class CustomerServiceTest {
 	private CustomerService customerService;
 	@MockBean
 	private CustomerDao customerDao;
-	@Autowired
-	private AuthorityService authorityService;
+	@MockBean
+	private AuthorityDao authorityDao;
 	@Autowired
 	private BCryptPasswordEncoder bcrypt;
 	@Autowired
@@ -51,10 +58,6 @@ public class CustomerServiceTest {
 	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		AuthorityDTO ADMIN = new AuthorityDTO(1L, Role.ADMIN);
-		AuthorityDTO USER = new AuthorityDTO(2L, Role.USER);
-		authorityService.saveAuthority(ADMIN);
-		authorityService.saveAuthority(USER);
 	}
 
 	public Customer initCustomer() {
@@ -87,6 +90,25 @@ public class CustomerServiceTest {
 		assertThat(customerDTO.getPetName()).isEqualTo("Toby");
 		assertThat(customerDTO.getVet()).isNullOrEmpty();
 	}
+	
+	@Test
+	public void testGetCustomerWithRolesDTO() throws Exception {
+		Customer customer = initCustomer();
+		
+		when(customerDao.getCustomerById(anyLong())).thenReturn(customer);
+		
+		CustomerWithRolesDTO customerWithRolesDTO = customerService.getCustomerWithRolesById(anyLong());
+		
+		verify(customerDao).getCustomerById(anyLong());
+		assertThat(customerWithRolesDTO.getId()).isEqualTo(1L);
+		assertThat(customerWithRolesDTO.getName()).isEqualTo("Rares");
+		assertThat(customerWithRolesDTO.getEmail()).isEqualTo("foo@gmail.com");
+		assertThat(bcrypt.matches("password", customerWithRolesDTO.getPassword())).isEqualTo(true);
+		assertThat(customerWithRolesDTO.getPhone()).isEqualTo("1234567890");
+		assertThat(customerWithRolesDTO.getPetSpecies()).isEqualTo("Labrador");
+		assertThat(customerWithRolesDTO.getPetName()).isEqualTo("Toby");
+		
+	}
 
 	@Test
 	public void testGetAllCustomers() {
@@ -108,9 +130,11 @@ public class CustomerServiceTest {
 	@Test
 	public void testSaveCustomer() {
 		Customer customer = initCustomer();
+		Authority authority = new Authority(Role.USER);
 
 		CustomerDTO mapperCustomer = customerMapper.mapEntityToDto(customer);
 
+		when(authorityDao.findByRole(any(Role.class))).thenReturn(authority);
 		when(customerDao.saveCustomer(anyLong(), any(Customer.class))).thenReturn(customer);
 		CustomerDTO customerDTO = customerService.saveCustomer(anyLong(), mapperCustomer);
 
@@ -172,4 +196,46 @@ public class CustomerServiceTest {
 
 		verify(customerDao).deleteCustomerById(anyLong());
 	}
+	
+	@Test
+	public void testSaveCustomerEmailAlreadyExistsError() throws Exception {
+		Customer customer = initCustomer();
+
+		CustomerDTO mappedCustomer = customerMapper.mapEntityToDto(customer);
+
+		when(customerDao.checkEmail(anyString())).thenReturn(true);
+		when(customerDao.saveCustomer(anyLong(), any(Customer.class))).thenReturn(customer);
+
+		assertThrows(EmailAlreadyExistsException.class, 
+				() -> customerService.saveCustomer(anyLong(), mappedCustomer));
+	}
+
+	@Test
+	public void testSaveCustomerRoleIsNullError() throws Exception {
+		Customer customer = initCustomer();
+
+		CustomerDTO mappedCustomer = customerMapper.mapEntityToDto(customer);
+
+		when(customerDao.saveCustomer(anyLong(), any(Customer.class))).thenReturn(customer);
+//		when(authorityDao.findByRole(any(Role.class))).thenReturn(null);
+		
+		assertThrows(RoleNotFoundException.class, 
+				() -> customerService.saveCustomer(anyLong(), mappedCustomer));
+		
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
