@@ -42,7 +42,7 @@ public class AuthorityController {
 			@PathVariable(name = "oldAuthority") Role oldAuthority,
 			@PathVariable(name = "newAuthority") Role newAuthority) {
 		authorityService.changeRoleOfVet(vetId, oldAuthority, newAuthority);
-		return new ResponseEntity<>("Role was successfully changed", HttpStatus.CREATED);
+		return new ResponseEntity<>("Role was successfully changed", HttpStatus.OK);
 	}
 
 	@PutMapping("/change/customer/{customerId}/{oldAuthority}/{newAuthority}")
@@ -50,14 +50,21 @@ public class AuthorityController {
 			@PathVariable(name = "oldAuthority") Role oldAuthority,
 			@PathVariable(name = "newAuthority") Role newAuthority) {
 		authorityService.changeRoleOfCustomer(customerId, oldAuthority, newAuthority);
-		return new ResponseEntity<>("Role was successfully changed", HttpStatus.CREATED);
+		return new ResponseEntity<>("Role was successfully changed", HttpStatus.OK);
 	}
 
-	@DeleteMapping("/{id}/{role}")
-	public ResponseEntity<String> deleteVetForRole(@PathVariable(name = "id") Long vetId,
+	@DeleteMapping("/vet/{id}/{role}")
+	public ResponseEntity<String> deletRoleForVet(@PathVariable(name = "id") Long vetId,
 			@PathVariable(name = "role") Role role) {
 		authorityService.deleteRoleForVet(vetId, role);
-		return new ResponseEntity<>("Role was delete successfully", HttpStatus.OK);
+		return new ResponseEntity<>("Role was successfully deleted", HttpStatus.OK);
+	}
+
+	@DeleteMapping("/customer/{id}/{role}")
+	public ResponseEntity<String> deleteRoleForCustomer(@PathVariable(name = "id") Long customerId,
+			@PathVariable(name = "role") Role role) {
+		authorityService.deleteRoleForCustomer(customerId, role);
+		return new ResponseEntity<>("Role was successfully deleted", HttpStatus.OK);
 	}
 
 }
