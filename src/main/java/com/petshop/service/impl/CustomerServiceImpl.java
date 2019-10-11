@@ -1,5 +1,6 @@
 package com.petshop.service.impl;
 
+import com.petshop.dao.AuthorityDao;
 import com.petshop.dao.CustomerDao;
 import com.petshop.dto.CustomerDTO;
 import com.petshop.dto.CustomerWithRolesDTO;
@@ -11,7 +12,6 @@ import com.petshop.mapper.impl.CustomerWithRolesMapper;
 import com.petshop.models.Customer;
 import com.petshop.models.authority.Authority;
 import com.petshop.models.authority.Role;
-import com.petshop.repository.RoleRepository;
 import com.petshop.service.CustomerService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.List;
 @Service
 public class CustomerServiceImpl implements CustomerService {
 	@Autowired
-	private RoleRepository roleRepository;
+	private AuthorityDao authorityDao;
 	@Autowired
 	private CustomerDao customerDao;
 	@Autowired
@@ -62,7 +62,7 @@ public class CustomerServiceImpl implements CustomerService {
 			throw new EmailAlreadyExistsException();
 		}
 		Customer customer = customerMapper.mapDtoToEntity(customerDTO);
-		Authority auth = roleRepository.findByRole(Role.USER);
+		Authority auth = authorityDao.findByRole(Role.USER);
 		if (auth != null) {
 			customer.setPassword(bcrypt.encode(customerDTO.getPassword()));
 			customer.addRole(auth);
