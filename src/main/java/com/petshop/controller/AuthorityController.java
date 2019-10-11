@@ -27,14 +27,26 @@ public class AuthorityController {
 	@Autowired
 	private AuthorityService authorityService;
 
+	@GetMapping("/all")
+	public ResponseEntity<List<AuthorityDTO>> getAllRoles() {
+		return new ResponseEntity<>(authorityService.getAllRoles(), HttpStatus.OK);
+	}
+	
 	@PostMapping("")
 	public ResponseEntity<AuthorityDTO> addRole(@Valid @RequestBody AuthorityDTO authorityDTO) {
 		return new ResponseEntity<>(authorityService.saveAuthority(authorityDTO), HttpStatus.CREATED);
 	}
 
-	@GetMapping("/all")
-	public ResponseEntity<List<AuthorityDTO>> getAllRoles() {
-		return new ResponseEntity<>(authorityService.getAllRoles(), HttpStatus.OK);
+	@PostMapping("/vet/{id}/{role}")
+	public ResponseEntity<String> addRoleForVet(@PathVariable(name = "id") Long vetId, @PathVariable(name = "role") Role role){
+		authorityService.addRoleForVet(vetId, role);
+		return new ResponseEntity<>("Role was added successfully",HttpStatus.CREATED);
+	}
+	
+	@PostMapping("/customer/{id}/{role}")
+	public ResponseEntity<String> addRoleForCustomer(@PathVariable(name = "id") Long customerId, @PathVariable(name = "role") Role role){
+		authorityService.addRoleForCustomer(customerId, role);
+		return new ResponseEntity<>("Role was added successfully",HttpStatus.CREATED);
 	}
 
 	@PutMapping("/change/vet/{vetId}/{oldAuthority}/{newAuthority}")
