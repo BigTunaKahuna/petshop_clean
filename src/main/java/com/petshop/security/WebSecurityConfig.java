@@ -19,8 +19,10 @@ import com.petshop.models.authority.vet.VetDetailsService;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	VetDetailsService vetDetailsService;
-	CustomerDetailsService customerDetailsService;
+	private VetDetailsService vetDetailsService;
+	private CustomerDetailsService customerDetailsService;
+	private static final String ADMIN = "ADMIN";
+	private static final String USER = "USER";
 
 	@Autowired
 	public WebSecurityConfig(VetDetailsService vetDetailsService, CustomerDetailsService customerDetailsService) {
@@ -51,9 +53,30 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-			.antMatchers(HttpMethod.GET, "/vet/**").hasAuthority("ADMIN")
-			.antMatchers(HttpMethod.GET,"/customer/**").hasAuthority("USER")
+			// Vet path
+			.antMatchers(HttpMethod.GET, "/vet/1").hasAuthority(ADMIN)
+			.antMatchers(HttpMethod.GET, "vet/all").hasAuthority(ADMIN)
 			.antMatchers(HttpMethod.POST, "/vet").permitAll()
+			.antMatchers(HttpMethod.PUT, "/vet/1").hasAuthority(ADMIN)
+			.antMatchers(HttpMethod.DELETE, "/vet/1").hasAuthority(ADMIN)
+			// Customer path
+			.antMatchers(HttpMethod.GET,"/customer/1").hasAuthority(USER)
+			.antMatchers(HttpMethod.GET, "/customer/all").hasAuthority(USER)
+			.antMatchers(HttpMethod.POST, "/customer/vet/1").permitAll()
+			.antMatchers(HttpMethod.PUT, "/customer/1").hasAuthority(USER)
+			.antMatchers(HttpMethod.PUT, "/customer/1/1").hasAuthority(USER)
+			.antMatchers(HttpMethod.DELETE, "/customer/1").hasAuthority(USER)
+			// Authority path
+			.antMatchers(HttpMethod.GET, "/role/all").hasAuthority(ADMIN)
+			// Permit all for testing purposes
+			.antMatchers(HttpMethod.POST, "/role").permitAll()
+			.antMatchers(HttpMethod.POST, "/role/vet/1/ROLE").hasAuthority(ADMIN)
+			.antMatchers(HttpMethod.POST, "/role/customer/1/ROLE").hasAuthority(ADMIN)
+			.antMatchers(HttpMethod.PUT, "/role/change/vet/1/ROLE/ROLE").hasAuthority(ADMIN)
+			.antMatchers(HttpMethod.PUT, "/role/change/customer/1/ROLE/ROLE").hasAnyAuthority(ADMIN)
+			.antMatchers(HttpMethod.DELETE, "/role/vet/1/ROLE").hasAuthority(ADMIN)
+			.antMatchers(HttpMethod.DELETE, "/role/customer/1/ROLE").hasAuthority(ADMIN)
+			
 			.and()
 			.formLogin()
 			.and()
