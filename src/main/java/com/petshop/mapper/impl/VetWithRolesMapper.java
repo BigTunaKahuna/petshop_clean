@@ -26,6 +26,8 @@ public class VetWithRolesMapper implements Mapper<Vet, VetWithRolesDTO> {
 			vetWithRolesDTO.setAge(entity.getAge());
 		if (entity.getRoles() != null)
 			vetWithRolesDTO.setRoles(entity.getRoles());
+		if (entity.getCustomers() != null)
+			vetWithRolesDTO.setCustomers(entity.getCustomers());
 
 		return vetWithRolesDTO;
 	}
@@ -47,6 +49,8 @@ public class VetWithRolesMapper implements Mapper<Vet, VetWithRolesDTO> {
 			vet.setAge(dto.getAge());
 		if (dto.getRoles() != null)
 			vet.setRoles(dto.getRoles());
+		if (dto.getCustomers() != null)
+			vet.setCustomers(dto.getCustomers());
 
 		return vet;
 	}

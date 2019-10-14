@@ -2,14 +2,10 @@ package com.petshop.dao.impl;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import com.petshop.dao.CustomerDao;
 import com.petshop.exception.IdNotFoundException;
 import com.petshop.models.Customer;
@@ -19,10 +15,6 @@ import com.petshop.repository.VetRepository;
 
 @Repository
 public class CustomerDaoImpl implements CustomerDao {
-
-	@PersistenceContext
-	EntityManager em;
-
 	Logger logger = LoggerFactory.getLogger(CustomerDaoImpl.class);
 
 	@Autowired
@@ -70,24 +62,6 @@ public class CustomerDaoImpl implements CustomerDao {
 			customerReq.setPhone(customer.getPhone());
 			return customerRepository.save(customerReq);
 		}).orElseThrow(IdNotFoundException::new);
-	}
-
-	@Override
-	@Transactional
-	public Customer updateVetCustomer(Long newVetId, Long customerId, Customer customer) {
-		Vet newVet = vetRepository.findById(newVetId).orElseThrow(IdNotFoundException::new);
-		if (customerId != null && newVet != null) {
-			try {
-				newVet.addCustomer(customer);
-				customer.setVet(newVet);
-				customerRepository.deleteById(customerId);
-				em.flush();
-				return customerRepository.save(customer);
-			} catch (IdNotFoundException e) {
-				throw new IdNotFoundException();
-			}
-		}
-		return customer;
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import com.petshop.models.Vet;
 import com.petshop.models.authority.Authority;
 
 public class CustomerWithRolesDTO {
@@ -38,6 +39,7 @@ public class CustomerWithRolesDTO {
 	private String petName;
 
 	private Set<Authority> roles = new HashSet<>();
+	private Vet vet;
 
 	public CustomerWithRolesDTO() {
 	}
@@ -47,7 +49,7 @@ public class CustomerWithRolesDTO {
 			@NotEmpty(message = "Please enter a password") String password,
 			@NotEmpty(message = "Please enter a phone number") @Size(min = 10, max = 10, message = "Phone size must be 10") String phone,
 			@NotEmpty(message = "Please enter a pet species") String petSpecies,
-			@NotEmpty(message = "Please enter a pet name") String petName, Set<Authority> roles) {
+			@NotEmpty(message = "Please enter a pet name") String petName, Set<Authority> roles, Vet vet) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -57,6 +59,7 @@ public class CustomerWithRolesDTO {
 		this.petSpecies = petSpecies;
 		this.petName = petName;
 		this.roles = roles;
+		this.vet = vet;
 	}
 
 	public Long getId() {
@@ -130,5 +133,12 @@ public class CustomerWithRolesDTO {
 	public void removeRole(Authority auth) {
 		roles.remove(auth);
 	}
+	
+	public Vet getVet() {
+		return vet;
+	}
 
+	public void setVet(Vet vet) {
+		this.vet = vet;
+	}
 }

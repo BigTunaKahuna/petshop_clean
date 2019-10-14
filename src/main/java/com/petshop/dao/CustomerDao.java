@@ -18,8 +18,6 @@ public interface CustomerDao {
 
 	Customer updateCustomer(Long vetId, Customer customer);
 
-	Customer updateVetCustomer(Long vetId, Long custId, Customer customer);
-
 	void deleteCustomerById(Long id);
 
 	Boolean checkEmail(String email);

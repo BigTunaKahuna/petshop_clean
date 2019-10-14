@@ -28,6 +28,8 @@ public class CustomerWithRolesMapper implements Mapper<Customer, CustomerWithRol
 			customerWithRolesDTO.setPetName(entity.getPetName());
 		if (entity.getRole() != null)
 			customerWithRolesDTO.setRoles(entity.getRole());
+		if (entity.getVet() != null)
+			customerWithRolesDTO.setVet(entity.getVet());
 
 		return customerWithRolesDTO;
 	}
@@ -51,6 +53,8 @@ public class CustomerWithRolesMapper implements Mapper<Customer, CustomerWithRol
 			customer.setPetName(dto.getPetName());
 		if (dto.getRoles() != null)
 			customer.setRole(dto.getRoles());
+		if (dto.getVet() != null)
+			customer.setVet(dto.getVet());
 
 		return customer;
 	}

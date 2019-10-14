@@ -1,6 +1,7 @@
 package com.petshop.controller;
 
 import com.petshop.dto.CustomerDTO;
+import com.petshop.dto.CustomerWithRolesDTO;
 import com.petshop.exception.IdNotFoundException;
 import com.petshop.service.CustomerService;
 
@@ -44,11 +45,11 @@ public class CustomerController {
 	// REQUEST:PUT @PATH: /customer/{customerId}/{newVetId} - Transfer to
 	// another doctor
 	@PutMapping("/{customerId}/{newVetId}")
-	public @Valid ResponseEntity<CustomerDTO> updateVetForCustomer(@PathVariable(value = "newVetId") Long newVetId,
-			@PathVariable(value = "customerId") Long customerId, @Valid @RequestBody CustomerDTO customerDTO) {
+	public @Valid ResponseEntity<CustomerWithRolesDTO> updateVetForCustomer(@PathVariable(value = "newVetId") Long newVetId,
+			@PathVariable(value = "customerId") Long customerId) {
 
 		try {
-			CustomerDTO customer = customerService.updateVetForCustomer(newVetId, customerId, customerDTO);
+			CustomerWithRolesDTO customer = customerService.updateVetForCustomer(newVetId, customerId);
 			return new ResponseEntity<>(customer, HttpStatus.CREATED);
 		} catch (IdNotFoundException e) {
 			throw new IdNotFoundException();

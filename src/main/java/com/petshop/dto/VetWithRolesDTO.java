@@ -1,6 +1,7 @@
 package com.petshop.dto;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.constraints.Email;
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.petshop.models.Customer;
 import com.petshop.models.authority.Authority;
 
 public class VetWithRolesDTO {
@@ -38,6 +40,8 @@ public class VetWithRolesDTO {
 	private String email;
 	private Set<Authority> roles = new HashSet<>();
 
+	private List<Customer> customers;
+
 	public VetWithRolesDTO() {
 	}
 
@@ -48,7 +52,7 @@ public class VetWithRolesDTO {
 	}
 
 	public VetWithRolesDTO(Long id, String name, String password, int age, double yearsOfExperience, String email,
-			Set<Authority> roles) {
+			Set<Authority> roles, List<Customer> customers) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -57,6 +61,7 @@ public class VetWithRolesDTO {
 		this.yearsOfExperience = yearsOfExperience;
 		this.email = email;
 		this.roles = roles;
+		this.customers = customers;
 	}
 
 	public Long getId() {
@@ -121,6 +126,14 @@ public class VetWithRolesDTO {
 
 	public void removeRole(Authority auth) {
 		roles.remove(auth);
+	}
+	
+	public List<Customer> getCustomers() {
+		return customers;
+	}
+	
+	public void setCustomers(List<Customer> customers) {
+		this.customers = customers;
 	}
 
 }

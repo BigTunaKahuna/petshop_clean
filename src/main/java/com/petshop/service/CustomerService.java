@@ -17,7 +17,7 @@ public interface CustomerService {
 
 	CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO);
 
-	CustomerDTO updateVetForCustomer(Long newVetId, Long customerId, CustomerDTO customerDTO);
+	CustomerWithRolesDTO updateVetForCustomer(Long newVetId, Long customerId);
 
 	void deleteCustomerById(Long id);
 
