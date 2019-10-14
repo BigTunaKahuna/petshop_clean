@@ -88,6 +88,27 @@ public class VetDaoTest {
 		assertEquals(Double.valueOf(6), getVet.getYearsOfExperience());
 		assertEquals("foo@gmail.com", getVet.getEmail());
 	}
+	
+	@Test
+	@Transactional
+	@Rollback(true)
+	public void testSaveVetAndFlush() {
+		Vet vet = new Vet();
+		vet.setName("Marius");
+		vet.setEmail("foo@gmail.com");
+		vet.setPassword("password");
+		vet.setAge(30);
+		vet.setYearsOfExperience(6D);
+		vetDao.saveVetAndFlush(vet);
+		Vet getVet = vetDao.getVetById(vet.getId());
+
+		assertEquals(vet.getId(), getVet.getId());
+		assertEquals("Marius", getVet.getName());
+		assertEquals("password", getVet.getPassword());
+		assertEquals(Integer.valueOf(30), getVet.getAge());
+		assertEquals(Double.valueOf(6), getVet.getYearsOfExperience());
+		assertEquals("foo@gmail.com", getVet.getEmail());
+	}
 
 	@Test
 	@Transactional
@@ -141,5 +162,42 @@ public class VetDaoTest {
 		vetDao.deleteVetById(vetHolder.getId());
 
 		assertThrows(IdNotFoundException.class, () -> vetDao.getVetById(vetHolder.getId()));
+	}
+	
+	@Test
+	@Transactional
+	@Rollback(true)
+	public void testFindByEmail() {
+		Vet vet = new Vet();
+		vet.setName("Marius");
+		vet.setPassword("password");
+		vet.setAge(30);
+		vet.setYearsOfExperience(6D);
+		vet.setEmail("foo@gmail.com");
+		
+		vetDao.saveVet(vet);
+		Vet findByEmail = vetDao.findByEmail(vet.getEmail());
+		
+		assertEquals(vet, findByEmail);
+	}
+	
+	@Test
+	@Transactional
+	@Rollback(true)
+	public void testCheckEmail() {
+		Vet vet = new Vet();
+		vet.setName("Marius");
+		vet.setPassword("password");
+		vet.setAge(30);
+		vet.setYearsOfExperience(6D);
+		vet.setEmail("foo@gmail.com");
+		vetDao.saveVet(vet);
+		
+		Boolean email1 = vetDao.checkEmail(vet.getEmail());
+		Boolean email2 = vetDao.checkEmail("");
+		
+		assertEquals(true, email1);
+		assertEquals(false, email2);
+		
 	}
 }

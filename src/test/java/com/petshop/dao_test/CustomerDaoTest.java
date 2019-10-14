@@ -164,42 +164,6 @@ public class CustomerDaoTest {
 	@Test
 	@Transactional
 	@Rollback(true)
-	public void testUpdateVetCustomer() {
-		Vet vet1 = new Vet();
-		vet1.setName("Marius");
-		vet1.setEmail("foo@gmail.com");
-		vet1.setPassword("password");
-		vet1.setAge(30);
-		vet1.setYearsOfExperience(6D);
-
-		Vet vet2 = new Vet();
-		vet2.setName("Andrei");
-		vet2.setEmail("fooUpdate@gmail.com");
-		vet2.setPassword("password2");
-		vet2.setAge(40);
-		vet2.setYearsOfExperience(13D);
-
-		Customer customer = new Customer();
-		customer.setName("Rares");
-		customer.setEmail("foo@gmail.com");
-		customer.setPassword("password");
-		customer.setPhone("1234567890");
-		customer.setPetSpecies("Labrador");
-		customer.setPetName("Toby");
-		customer.setVet(vet1);
-
-		vetDao.saveVet(vet1);
-		vetDao.saveVet(vet2);
-		customerDao.saveCustomer(vet1.getId(), customer);
-		Customer customerHolder = customerDao.updateVetCustomer(vet2.getId(), customer.getId(), customer);
-		Customer updatedCustomer = customerDao.getCustomerById(customerHolder.getId());
-
-		assertEquals(vet2.toString(), updatedCustomer.getVet().toString());
-	}
-
-	@Test
-	@Transactional
-	@Rollback(true)
 	public void testDeleteCustomerById() {
 		Vet vet = new Vet();
 		vet.setName("Marius");
@@ -221,11 +185,83 @@ public class CustomerDaoTest {
 
 		customerDao.deleteCustomerById(customer.getId());
 		assertThrows(IdNotFoundException.class, () -> customerDao.getCustomerById(customer.getId()));
-
 	}
+	
+	@Test
+	@Transactional
+	@Rollback(true)
+	public void testCheckEmail() {
+		Vet vet = new Vet();
+		vet.setName("Marius");
+		vet.setEmail("foo@gmail.com");
+		vet.setPassword("password");
+		vet.setAge(30);
+		vet.setYearsOfExperience(6D);
+		vetDao.saveVet(vet);
+
+		Customer customer = new Customer();
+		customer.setName("Rares");
+		customer.setEmail("foo@gmail.com");
+		customer.setPassword("password");
+		customer.setPhone("1234567890");
+		customer.setPetSpecies("Labrador");
+		customer.setPetName("Toby");
+		customer.setVet(vet);
+		customerDao.saveCustomer(vet.getId(), customer);
+		
+		Boolean email = customerDao.checkEmail(customer.getEmail());
+		Boolean email2 = customerDao.checkEmail(null);
+		assertEquals(true, email);
+		assertEquals(false, email2);
+	}
+	
+	@Test
+	@Transactional
+	@Rollback(true)
+	public void testFindByEmail() {
+		Vet vet = new Vet();
+		vet.setName("Marius");
+		vet.setEmail("foo@gmail.com");
+		vet.setPassword("password");
+		vet.setAge(30);
+		vet.setYearsOfExperience(6D);
+		vetDao.saveVet(vet);
+
+		Customer customer = new Customer();
+		customer.setName("Rares");
+		customer.setEmail("foo@gmail.com");
+		customer.setPassword("password");
+		customer.setPhone("1234567890");
+		customer.setPetSpecies("Labrador");
+		customer.setPetName("Toby");
+		customer.setVet(vet);
+		customerDao.saveCustomer(vet.getId(), customer);
+		
+		Customer findByEmail = customerDao.findByEmail(customer.getEmail());
+		
+		assertEquals(customer, findByEmail);
+	}
+	
 
 	@Test
 	public void testIdNotFoundException() {
 		assertThrows(IdNotFoundException.class, () -> customerDao.getCustomerById(Long.valueOf(100)));
 	}
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

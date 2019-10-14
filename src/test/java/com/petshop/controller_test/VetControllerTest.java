@@ -49,9 +49,10 @@ public class VetControllerTest {
 	private VetMapper vetMapper;
 	@Autowired
 	private BCryptPasswordEncoder bcrypt;
+	private static final String ADMIN = "ADMIN";
 
 	@Test
-	@WithMockUser(authorities = "ADMIN")
+	@WithMockUser(authorities = ADMIN)
 	public void getVetByIdTest() throws Exception {
 		Vet vet = new Vet();
 		vet.setId(1L);
@@ -133,7 +134,7 @@ public class VetControllerTest {
 	}
 
 	@Test
-	@WithMockUser(authorities = "ADMIN")
+	@WithMockUser(authorities = ADMIN)
 	public void testGetAllVets() throws Exception {
 		Vet vet1 = new Vet();
 		vet1.setId(1L);
@@ -181,7 +182,6 @@ public class VetControllerTest {
 	}
 
 	@Test
-	@WithMockUser(authorities = "ADMIN")
 	public void testSaveVet() throws Exception {
 		Vet vet = new Vet();
 		vet.setId(1L);
@@ -208,7 +208,7 @@ public class VetControllerTest {
 	}
 
 	@Test
-	@WithMockUser(authorities = "ADMIN")
+	@WithMockUser(authorities = ADMIN)
 	public void testUpdateVet() throws Exception {
 		Vet vet = new Vet();
 		vet.setId(1L);
@@ -235,6 +235,7 @@ public class VetControllerTest {
 	}
 
 	@Test
+	@WithMockUser(authorities = ADMIN)
 	public void testDeleteVetById() throws Exception {
 		this.mvc.perform(delete("/vet/1")).andExpect(status().isOk());
 
@@ -244,7 +245,7 @@ public class VetControllerTest {
 	}
 
 	@Test
-	@WithMockUser(authorities = "ADMIN")
+	@WithMockUser(authorities = ADMIN)
 	public void testIdNotFoundException() throws Exception, IdNotFoundException {
 		doThrow(new IdNotFoundException()).when(vetService).getVetById(anyLong());
 		this.mvc.perform(get("/vet/2")).andExpect(status().isNotFound());

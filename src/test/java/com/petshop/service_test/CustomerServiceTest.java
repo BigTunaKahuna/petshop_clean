@@ -23,19 +23,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.petshop.dao.AuthorityDao;
 import com.petshop.dao.CustomerDao;
-import com.petshop.dto.AuthorityDTO;
+import com.petshop.dao.VetDao;
 import com.petshop.dto.CustomerDTO;
 import com.petshop.dto.CustomerWithRolesDTO;
 import com.petshop.exception.EmailAlreadyExistsException;
 import com.petshop.exception.IdNotFoundException;
 import com.petshop.exception.RoleNotFoundException;
 import com.petshop.mapper.impl.CustomerMapper;
-import com.petshop.mapper.impl.CustomerWithRolesMapper;
 import com.petshop.models.Customer;
 import com.petshop.models.Vet;
 import com.petshop.models.authority.Authority;
 import com.petshop.models.authority.Role;
-import com.petshop.service.AuthorityService;
 import com.petshop.service.CustomerService;
 
 import static org.mockito.BDDMockito.*;
@@ -54,6 +52,8 @@ public class CustomerServiceTest {
 	private BCryptPasswordEncoder bcrypt;
 	@Autowired
 	private CustomerMapper customerMapper;
+	@MockBean
+	private VetDao vetDao;
 
 	@BeforeEach
 	public void setup() {
@@ -90,15 +90,15 @@ public class CustomerServiceTest {
 		assertThat(customerDTO.getPetName()).isEqualTo("Toby");
 		assertThat(customerDTO.getVet()).isNullOrEmpty();
 	}
-	
+
 	@Test
 	public void testGetCustomerWithRolesDTO() throws Exception {
 		Customer customer = initCustomer();
-		
+
 		when(customerDao.getCustomerById(anyLong())).thenReturn(customer);
-		
+
 		CustomerWithRolesDTO customerWithRolesDTO = customerService.getCustomerWithRolesById(anyLong());
-		
+
 		verify(customerDao).getCustomerById(anyLong());
 		assertThat(customerWithRolesDTO.getId()).isEqualTo(1L);
 		assertThat(customerWithRolesDTO.getName()).isEqualTo("Rares");
@@ -107,7 +107,7 @@ public class CustomerServiceTest {
 		assertThat(customerWithRolesDTO.getPhone()).isEqualTo("1234567890");
 		assertThat(customerWithRolesDTO.getPetSpecies()).isEqualTo("Labrador");
 		assertThat(customerWithRolesDTO.getPetName()).isEqualTo("Toby");
-		
+
 	}
 
 	@Test
@@ -172,14 +172,27 @@ public class CustomerServiceTest {
 	@Test
 	public void testUpdateVetForCustomer() {
 		Vet vet = new Vet();
-		vet.setName("Iulica");
+		vet.setId(1L);
+		vet.setName("Marius");
+		vet.setEmail("foo@gmail.com");
+		vet.setPassword(bcrypt.encode("password"));
+		vet.setAge(30);
+		vet.setYearsOfExperience(6D);
 		Customer customer = initCustomer();
 		customer.setVet(vet);
 
-		when(customerDao.updateVetCustomer(anyLong(), anyLong(), any(Customer.class))).thenReturn(customer);
-		CustomerDTO customerDTO = customerService.updateVetForCustomer(anyLong(), anyLong(), any(CustomerDTO.class));
+		when(vetDao.getVetById(anyLong())).thenReturn(vet);
+		when(customerDao.getCustomerById(anyLong())).thenReturn(customer);
+		when(customerDao.saveCustomer(any(Customer.class))).thenReturn(customer);
+		doNothing().when(customerDao).deleteCustomerById(anyLong());
 
-		verify(customerDao).updateVetCustomer(anyLong(), anyLong(), any(Customer.class));
+		CustomerWithRolesDTO customerDTO = customerService.updateVetForCustomer(vet.getId(), customer.getId());
+
+		verify(vetDao).getVetById(anyLong());
+		verify(customerDao).saveCustomer(any(Customer.class));
+		verify(customerDao).getCustomerById(anyLong());
+		verify(customerDao).deleteCustomerById(anyLong());
+
 		assertThat(customerDTO.getId()).isEqualTo(1L);
 		assertThat(customerDTO.getName()).isEqualTo("Rares");
 		assertThat(customerDTO.getEmail()).isEqualTo("foo@gmail.com");
@@ -187,16 +200,17 @@ public class CustomerServiceTest {
 		assertThat(customerDTO.getPhone()).isEqualTo("1234567890");
 		assertThat(customerDTO.getPetSpecies()).isEqualTo("Labrador");
 		assertThat(customerDTO.getPetName()).isEqualTo("Toby");
-		assertThat(customerDTO.getVet()).isEqualTo("Iulica");
+		assertThat(customerDTO.getVet().getName()).isEqualTo("Marius");
 	}
 
 	@Test
 	public void testDeleteCustomerById() {
+		doNothing().when(customerDao).deleteCustomerById(anyLong());
 		customerService.deleteCustomerById(anyLong());
 
 		verify(customerDao).deleteCustomerById(anyLong());
 	}
-	
+
 	@Test
 	public void testSaveCustomerEmailAlreadyExistsError() throws Exception {
 		Customer customer = initCustomer();
@@ -206,8 +220,7 @@ public class CustomerServiceTest {
 		when(customerDao.checkEmail(anyString())).thenReturn(true);
 		when(customerDao.saveCustomer(anyLong(), any(Customer.class))).thenReturn(customer);
 
-		assertThrows(EmailAlreadyExistsException.class, 
-				() -> customerService.saveCustomer(anyLong(), mappedCustomer));
+		assertThrows(EmailAlreadyExistsException.class, () -> customerService.saveCustomer(anyLong(), mappedCustomer));
 	}
 
 	@Test
@@ -217,25 +230,14 @@ public class CustomerServiceTest {
 		CustomerDTO mappedCustomer = customerMapper.mapEntityToDto(customer);
 
 		when(customerDao.saveCustomer(anyLong(), any(Customer.class))).thenReturn(customer);
-//		when(authorityDao.findByRole(any(Role.class))).thenReturn(null);
-		
-		assertThrows(RoleNotFoundException.class, 
-				() -> customerService.saveCustomer(anyLong(), mappedCustomer));
-		
+
+		assertThrows(RoleNotFoundException.class, () -> customerService.saveCustomer(anyLong(), mappedCustomer));
+	}
+
+	@Test
+	public void testDeleteCustomerByIdThrowError() throws Exception {
+		doThrow(IdNotFoundException.class).when(customerDao).deleteCustomerById(anyLong());
+
+		assertThrows(IdNotFoundException.class, () -> customerService.deleteCustomerById(anyLong()));
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

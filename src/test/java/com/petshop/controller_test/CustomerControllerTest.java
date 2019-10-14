@@ -52,9 +52,10 @@ public class CustomerControllerTest {
 	private CustomerMapper customerMapper;
 	@Autowired
 	private BCryptPasswordEncoder bcrypt;
+	private static final String USER = "USER";
 
 	@Test
-	@WithMockUser(authorities = "USER")
+	@WithMockUser(authorities = USER)
 	public void testGetCustomerById() throws Exception {
 		Customer customer = new Customer();
 		customer.setId(1L);
@@ -78,7 +79,7 @@ public class CustomerControllerTest {
 	}
 
 	@Test
-	@WithMockUser(authorities = "USER")
+	@WithMockUser(authorities = USER)
 	public void testGetAllCustomers() throws Exception {
 		List<CustomerDTO> allCustomers = new ArrayList<>();
 		Customer customer1 = new Customer();
@@ -129,7 +130,7 @@ public class CustomerControllerTest {
 	}
 
 	@Test
-	@WithMockUser(authorities = "USER")
+	@WithMockUser(authorities = USER)
 	public void testSaveCustomer() throws Exception {
 		Customer customer = new Customer();
 		customer.setId(1L);
@@ -155,7 +156,7 @@ public class CustomerControllerTest {
 	}
 
 	@Test
-	@WithMockUser(authorities = "USER")
+	@WithMockUser(authorities = USER)
 	public void testUpdateCustomer() throws Exception {
 		Customer customer = new Customer();
 		customer.setId(1L);
@@ -178,7 +179,7 @@ public class CustomerControllerTest {
 	}
 
 	@Test
-	@WithMockUser(authorities = "USER")
+	@WithMockUser(authorities = USER)
 	public void testUpdateVetForCustomer() throws JsonProcessingException, Exception {
 		Customer customer = new Customer();
 		customer.setId(1L);
@@ -194,11 +195,11 @@ public class CustomerControllerTest {
 		this.mvc.perform(put("/customer/1/1").content(mapper.writeValueAsString(customerDTO))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated());
-		verify(customerService).updateVetForCustomer(anyLong(), anyLong(), any(CustomerDTO.class));
+		verify(customerService).updateVetForCustomer(anyLong(), anyLong());
 	}
 
 	@Test
-	@WithMockUser(authorities = "USER")
+	@WithMockUser(authorities = USER)
 	public void testDeleteVetById() throws Exception {
 		this.mvc.perform(delete("/customer/1")).andExpect(status().isOk());
 
@@ -208,7 +209,7 @@ public class CustomerControllerTest {
 	}
 
 	@Test
-	@WithMockUser(authorities = "USER")
+	@WithMockUser(authorities = USER)
 	public void testIdNotFoundException() throws Exception, IdNotFoundException {
 		doThrow(new IdNotFoundException()).when(customerService).getCustomerById(anyLong());
 		this.mvc.perform(get("/customer/1")).andExpect(status().isNotFound());
@@ -224,7 +225,7 @@ public class CustomerControllerTest {
 		customerDTO.setPetSpecies("Labrador");
 		customerDTO.setPetName("Toby");
 
-		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customerDTO))
+		this.mvc.perform(post("/customer/vet/1").content(mapper.writeValueAsString(customerDTO))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value("400"))
 				.andExpect(jsonPath("$.errors[0]").value("Please enter a name"));
@@ -240,7 +241,7 @@ public class CustomerControllerTest {
 		customerDTO.setPetSpecies("Labrador");
 		customerDTO.setPetName("Toby");
 
-		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customerDTO))
+		this.mvc.perform(post("/customer/vet/1").content(mapper.writeValueAsString(customerDTO))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value("400"))
 				.andExpect(jsonPath("$.errors[0]").value("Please enter an email"));
@@ -256,7 +257,7 @@ public class CustomerControllerTest {
 		customerDTO.setPetSpecies("Labrador");
 		customerDTO.setPetName("Toby");
 
-		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customerDTO))
+		this.mvc.perform(post("/customer/vet/1").content(mapper.writeValueAsString(customerDTO))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value("400"))
 				.andExpect(jsonPath("$.errors[0]").value("Please enter a phone number"));
@@ -272,7 +273,7 @@ public class CustomerControllerTest {
 		customerDTO.setPhone("1234567890");
 		customerDTO.setPetName("Toby");
 
-		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customerDTO))
+		this.mvc.perform(post("/customer/vet/1").content(mapper.writeValueAsString(customerDTO))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value("400"))
 				.andExpect(jsonPath("$.errors[0]").value("Please enter the pet species"));
@@ -288,7 +289,7 @@ public class CustomerControllerTest {
 		customerDTO.setPhone("1234567890");
 		customerDTO.setPetSpecies("Labrador");
 
-		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customerDTO))
+		this.mvc.perform(post("/customer/vet/1").content(mapper.writeValueAsString(customerDTO))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value("400"))
 				.andExpect(jsonPath("$.errors[0]").value("Please enter a pet name"));
@@ -304,7 +305,7 @@ public class CustomerControllerTest {
 		customerDTO.setPetSpecies("Labrador");
 		customerDTO.setPetName("Toby");
 
-		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customerDTO))
+		this.mvc.perform(post("/customer/vet/1").content(mapper.writeValueAsString(customerDTO))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value("400"))
 				.andExpect(jsonPath("$.errors[0]").value("Please enter a password"));
@@ -321,7 +322,7 @@ public class CustomerControllerTest {
 		customerDTO.setPetSpecies("Labrador");
 		customerDTO.setPetName("Toby");
 
-		this.mvc.perform(put("/customer/1").content(mapper.writeValueAsString(customerDTO))
+		this.mvc.perform(post("/customer/vet/1").content(mapper.writeValueAsString(customerDTO))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest()).andExpect(jsonPath("$.status").value("400"))
 				.andExpect(jsonPath("$.errors[0]").value("Password must be at least 6 characters"));
