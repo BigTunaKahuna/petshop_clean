@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "jwt",
+  "type": "java.lang.Map",
+  "description": "A description for 'jwt'"
+}]}

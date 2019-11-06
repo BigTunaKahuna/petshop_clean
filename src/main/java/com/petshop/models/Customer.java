@@ -42,7 +42,7 @@ public class Customer implements Serializable {
 	private String petName;
 
 	@JsonBackReference
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "vet_id")
 	private Vet vet;
 

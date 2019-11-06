@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/vet")
+@Validated
 public class VetController {
 
 	@Autowired
@@ -36,6 +39,14 @@ public class VetController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+//	@GetMapping("")
+//	void foo (OAuth2Authentication authentication) {
+//		String auth = (String) authentication.getUserAuthentication().getPrincipal();
+//		String role = authentication.getAuthorities().iterator().next().getAuthority();
+//		logger.warn(role);
+//		logger.warn(auth);
+//	}
 
 	// REQUEST:GET @PATH: /vet/all - Get all vets
 	@GetMapping("/all")

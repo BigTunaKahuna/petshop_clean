@@ -1,9 +1,12 @@
-package com.petshop.security;
+package com.petshop.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,6 +20,7 @@ import com.petshop.models.authority.vet.VetDetailsService;
 
 @Configuration
 @EnableWebSecurity
+@Order(Ordered.LOWEST_PRECEDENCE)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private VetDetailsService vetDetailsService;
@@ -33,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	protected AuthenticationProvider vetAuthProvider() {
-		final DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        final DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 		provider.setUserDetailsService(vetDetailsService);
 		provider.setPasswordEncoder(encoder());
 		return provider;
@@ -45,7 +49,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		provider.setUserDetailsService(customerDetailsService);
 		provider.setPasswordEncoder(encoder());
 		return provider;
-		
 	}
 
 	
@@ -53,10 +56,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
+			.antMatchers("/oauth/**","/login**","/error").permitAll()
 			// Vet path
-			.antMatchers(HttpMethod.GET, "/vet/1").hasAuthority(ADMIN)
+			.antMatchers(HttpMethod.GET, "/vet/**").hasAuthority(ADMIN)
 			.antMatchers(HttpMethod.GET, "vet/all").hasAuthority(ADMIN)
-			.antMatchers(HttpMethod.POST, "/vet").permitAll()
 			.antMatchers(HttpMethod.PUT, "/vet/1").hasAuthority(ADMIN)
 			.antMatchers(HttpMethod.DELETE, "/vet/1").hasAuthority(ADMIN)
 			// Customer path
@@ -76,21 +79,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.PUT, "/role/change/customer/1/ROLE/ROLE").hasAnyAuthority(ADMIN)
 			.antMatchers(HttpMethod.DELETE, "/role/vet/1/ROLE").hasAuthority(ADMIN)
 			.antMatchers(HttpMethod.DELETE, "/role/customer/1/ROLE").hasAuthority(ADMIN)
-			
+			.anyRequest().authenticated()
 			.and()
-			.formLogin()
+			.formLogin().permitAll()
 			.and()
 			.logout()
 			.and()
-			.httpBasic()
-			.and()
-			.csrf().disable();	
+			.csrf().disable()
+			.httpBasic().disable();	
+		
 		}
 	
 	@Override
-	protected void configure(AuthenticationManagerBuilder auth) {
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(vetAuthProvider());
 		auth.authenticationProvider(customerAuthProvider());
+//		auth.inMemoryAuthentication().withUser("username").password(encoder().encode("password")).roles("USER");
+//		auth.userDetailsService(vetDetailsService);
+//		auth.userDetailsService(customerDetailsService);
+	}
+	
+
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
 	}
 
 	@Bean
