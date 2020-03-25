@@ -33,6 +33,9 @@ public class VetMapper implements Mapper<Vet, VetDTO> {
 		if (vetSource.getId() != null) {
 			vetDTO.setId(vetSource.getId());
 		}
+		if (vetSource.getPassword() != null) {
+			vetDTO.setPassword(vetSource.getPassword());
+		}
 		if (vetSource.getAge() != null) {
 			vetDTO.setAge(vetSource.getAge());
 		}
@@ -59,6 +62,10 @@ public class VetMapper implements Mapper<Vet, VetDTO> {
 
 			if (vetDTO.getAge() != null) {
 				vet.setAge(vetDTO.getAge());
+			}
+
+			if (vetDTO.getPassword() != null) {
+				vet.setPassword(vetDTO.getPassword());
 			}
 
 			if (vetDTO.getEmail() != null) {

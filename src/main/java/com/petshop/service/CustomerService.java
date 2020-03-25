@@ -1,11 +1,15 @@
 package com.petshop.service;
 
 import com.petshop.dto.CustomerDTO;
+import com.petshop.dto.CustomerWithRolesDTO;
+
 import java.util.List;
 
 public interface CustomerService {
 
 	CustomerDTO getCustomerById(Long id);
+	
+	CustomerWithRolesDTO getCustomerWithRolesById(Long id); 
 
 	List<CustomerDTO> getAllCustomers();
 
@@ -13,7 +17,7 @@ public interface CustomerService {
 
 	CustomerDTO updateCustomer(Long id, CustomerDTO customerDTO);
 
-	CustomerDTO updateVetForCustomer(Long newVetId, Long customerId, CustomerDTO customerDTO);
+	CustomerWithRolesDTO updateVetForCustomer(Long newVetId, Long customerId);
 
 	void deleteCustomerById(Long id);
 

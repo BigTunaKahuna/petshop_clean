@@ -1,6 +1,7 @@
 package com.petshop.dao.impl;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.petshop.dao.VetDao;
@@ -28,14 +29,19 @@ public class VetDaoImpl implements VetDao {
 	public Vet saveVet(Vet vet) {
 		return vetRepository.save(vet);
 	}
+	
+	public void saveVetAndFlush(Vet vet) {
+		vetRepository.saveAndFlush(vet);
+	}
 
 	@Override
 	public Vet updateVet(Long id, Vet vet) {
 		return vetRepository.findById(id).map(vetReq -> {
 			vetReq.setName(vet.getName());
+			vetReq.setEmail(vet.getEmail());
+			vetReq.setPassword(vet.getPassword());
 			vetReq.setAge(vet.getAge());
 			vetReq.setYearsOfExperience(vet.getYearsOfExperience());
-			vetReq.setEmail(vet.getEmail());
 			return vetRepository.save(vetReq);
 		}).orElseThrow(IdNotFoundException::new);
 	}
@@ -45,4 +51,19 @@ public class VetDaoImpl implements VetDao {
 		vetRepository.deleteById(id);
 	}
 
+	@Override
+	public Vet findByEmail(String email) {
+		return vetRepository.findByEmail(email);
+	}
+
+	@Override
+	public Boolean checkEmail(String email) {
+		Boolean exists = false;
+		if (vetRepository.findByEmail(email) != null) {
+			exists = true;
+			return exists;
+		}
+
+		return exists;
+	}
 }
